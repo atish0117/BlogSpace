@@ -190,7 +190,7 @@ const handleSaveEdit = async () => {
                   >
                     <Edit2 className="w-5 h-5" />
                   </button>
-                  <button onClick={() => deleteBlog(blog.$id)} className="text-red-600 hover:text-red-800">
+                  <button onClick={() => deleteBlog(blog.$id , blog.userId)} className="text-red-600 hover:text-red-800">
                     <Trash2 className="w-5 h-5" />
                   </button>
                 </td>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
-import { Camera, Edit2, Trash2 } from "lucide-react";
+import { Camera, Edit2, Trash2,FileText, Eye, Calendar,Bookmark  } from "lucide-react";
 import { Link } from "react-router-dom";
 import { databases, storage } from "../lib/appwrite";
 import { ID } from "appwrite";
@@ -14,6 +14,7 @@ export default function UserProfile() {
   const [userBlogs, setUserBlogs] = useState([]); //  store all user's blog inside this state
   const [coverImage, setCoverImage] = useState("");
   const [profileImage, setProfileImage] = useState("");
+  const [savedBlogs, setSavedBlogs] = useState([]);
 
   // update user cover image
   const handleCoverImageChange = async (e) => {
@@ -139,13 +140,34 @@ export default function UserProfile() {
         const blogs = await Promise.all(blogPromises);
         setUserBlogs(blogs);
       } catch (error) {
-        console.error("Error fetching user blogs:", error);
+        console.error("Error fetching user blogs:", error.message);
       }
     };
 
     fetchUserBlogs();
   }, [userProfile]);
   console.log(userBlogs, "all user's blogs");
+
+
+  // fetch user's saved blod 
+  useEffect(() => {
+    const fetchSavedBlogs = async () => {
+      if (!userProfile?.savedBlogs || userProfile.savedBlogs.length === 0) return;
+
+      try {
+        const blogPromises = userProfile.savedBlogs.map((blogId) =>
+          databases.getDocument(Config.appwriteDatabaseId, Config.appwriteCollectionIdBlogs, blogId)
+        );
+
+        const blogs = await Promise.all(blogPromises);
+        setSavedBlogs(blogs);
+      } catch (error) {
+        console.error("Error fetching saved blogs:", error);
+      }
+    };
+
+    fetchSavedBlogs();
+  }, [userProfile]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -231,46 +253,55 @@ export default function UserProfile() {
                   </div>
 
                   {/* Stats */}
-                  <div className="mt-6 grid grid-cols-2 gap-5 sm:grid-cols-3">
-                    {/* Total Posts */}
-                    <div className="bg-gray-50 px-4 py-5 shadow-sm rounded-lg overflow-hidden sm:p-6">
-                      <dt className="text-sm font-medium text-gray-500 truncate">
-                        Total Posts
-                      </dt>
-                      <dd className="mt-1 text-3xl font-semibold text-gray-900">
-                        {userProfile?.blogsId?.length || 0}
-                      </dd>
-                    </div>
+                  <div className="mt-6 grid grid-cols-2 gap-5 sm:grid-cols-4">
+      {/* Total Posts */}
+      <div className="bg-white px-6 py-5 shadow-lg rounded-xl border border-gray-200 hover:shadow-2xl transition-all duration-300">
+        <div className="flex items-center justify-between">
+          <FileText className="w-8 h-8 text-blue-600" />
+          <span className="text-gray-500 text-sm">Total Posts</span>
+        </div>
+        <p className="mt-2 text-4xl font-bold text-gray-900 transition-all">
+          {userProfile?.blogsId?.length || 0}
+        </p>
+      </div>
 
-                    {/* Total Views */}
-                    <div className="bg-gray-50 px-4 py-5 shadow-sm rounded-lg overflow-hidden sm:p-6">
-                      <dt className="text-sm font-medium text-gray-500 truncate">
-                        Total Views
-                      </dt>
-                      <dd className="mt-1 text-3xl font-semibold text-gray-900">
-                        {userBlogs?.length > 0
-                          ? userBlogs.reduce(
-                              (acc, blog) => acc + (blog.views || 0),
-                              0
-                            )
-                          : 0}
-                      </dd>
-                    </div>
+      {/* Total Views */}
+      <div className="bg-white px-6 py-5 shadow-lg rounded-xl border border-gray-200 hover:shadow-2xl transition-all duration-300">
+        <div className="flex items-center justify-between">
+          <Eye className="w-8 h-8 text-green-600" />
+          <span className="text-gray-500 text-sm">Total Views</span>
+        </div>
+        <p className="mt-2 text-4xl font-bold text-gray-900 transition-all">
+          {userBlogs?.length > 0
+            ? userBlogs.reduce((acc, blog) => acc + (blog.views || 0), 0)
+            : 0}
+        </p>
+      </div>
 
-                    {/* Member Since */}
-                    <div className="bg-gray-50 px-4 py-5 shadow-sm rounded-lg overflow-hidden sm:p-6">
-                      <dt className="text-sm font-medium text-gray-500 truncate">
-                        Member Since
-                      </dt>
-                      <dd className="mt-1 text-3xl font-semibold text-gray-900">
-                        {userProfile?.$createdAt
-                          ? new Date(
-                              userProfile.$createdAt
-                            ).toLocaleDateString()
-                          : "N/A"}
-                      </dd>
-                    </div>
-                  </div>
+      {/* Member Since */}
+      <div className="bg-white px-6 py-5 shadow-lg rounded-xl border border-gray-200 hover:shadow-2xl transition-all duration-300">
+        <div className="flex items-center justify-between">
+          <Calendar className="w-8 h-8 text-purple-600" />
+          <span className="text-gray-500 text-sm">Member Since</span>
+        </div>
+        <p className="mt-2 text-2xl font-semibold text-gray-900 transition-all">
+          {userProfile?.$createdAt
+            ? new Date(userProfile.$createdAt).toLocaleDateString()
+            : "N/A"}
+        </p>
+      </div>
+
+      {/* Total Saved Blogs */}
+      <div className="bg-white px-6 py-5 shadow-lg rounded-xl border border-gray-200 hover:shadow-2xl transition-all duration-300">
+        <div className="flex items-center justify-between">
+          <Bookmark className="w-8 h-8 text-yellow-600" />
+          <span className="text-gray-500 text-sm">Saved Blogs</span>
+        </div>
+        <p className="mt-2 text-4xl font-bold text-gray-900 transition-all">
+          {userProfile?.savedBlogs?.length || 0}
+        </p>
+      </div>
+    </div>
                 </div>
               </div>
             </div>
@@ -288,7 +319,7 @@ export default function UserProfile() {
                 ))}
               </div>
               ) : (
-                <p className="text-gray-600 text-center ">
+                <div className="text-gray-600 text-center ">
                   <span>No blogs found. Start writing your first blog!</span>
                   <div className="flex justify-center items-center ">
                     <div className="bg-white p-8 rounded-lg shadow-md">
@@ -308,9 +339,24 @@ export default function UserProfile() {
                       </div>
                     </div>
                   </div>
-                </p>
+                </div>
               )}
             </div>
+            {/* user saved blogs */}
+            <div className="min-h-screen bg-gray-50 py-12">
+      <div className="max-w-7xl mx-auto px-4">
+        <h2 className="text-3xl font-bold mb-6">Saved Blogs</h2>
+        {savedBlogs.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {savedBlogs.map((blog) => (
+                  <BlogCard key={blog.$id} blog={blog} />
+                ))}
+              </div>
+              ) : (
+          <p className="text-gray-600">No saved blogs yet.</p>
+        )}
+      </div>
+    </div>
           </div>
         </>
       ) : (

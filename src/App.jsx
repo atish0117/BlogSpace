@@ -16,6 +16,7 @@ import AdminPanel from './pages/AdminPanel';
 import ErrorPage from './pages/ErrorPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
+import './App.css'
 function App() {
   return (
     <AuthProvider>

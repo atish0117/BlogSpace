@@ -77,6 +77,7 @@ export default function SingleBlog() {
   if (!blog) {
     return <p className="text-center text-gray-500">Loading blog...</p>;
   }
+  console.log("image ",blog.authorImage)
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
@@ -84,7 +85,10 @@ export default function SingleBlog() {
         <header className="mb-8">
           <div className="flex items-center space-x-4 mb-4">
             <img
-              src={blog.authorImage ||  `https://api.dicebear.com/9.x/initials/svg?seed=${blog.authorName}`}
+              src={ storage.getFilePreview(
+                Config.appwriteBucketId,
+                blog?.authorImage
+              )}
               alt={blog.authorName}
               className="h-12 w-12 rounded-full"
             />

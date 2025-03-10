@@ -15,17 +15,17 @@ const CreateBlog = () => {
 
   // Check if editing an existing blog
   const existingBlog = location.state?.blog || null;
-
+  
   const [blogs, setBlogs] = useState({
     title: existingBlog?.title || "",
     categories: existingBlog?.category || [],
     content: existingBlog?.description || "",
   });
-
+  
   const [thumbnail, setThumbnail] = useState(null);
   const [thumbnailPreview, setThumbnailPreview] = useState(existingBlog ? storage.getFilePreview(Config.appwriteBucketId, existingBlog.thumbnail) : "");
   const [loading, setLoading] = useState(false);
-
+  const [text, setText] = useState("");
   const categories = [
     "Development", "Web Development", "Mobile Apps", "AI & Machine Learning", "Cybersecurity",
     "DevOps & Cloud Computing", "Programming & Coding", "Entrepreneurship & Startups", "Investing & Stock Market",
@@ -35,7 +35,8 @@ const CreateBlog = () => {
     "Leadership & Management", "Movies & TV Shows", "Music & Podcasts", "Gaming & Esports", "Books & Literature",
     "Pop Culture & Celebrities", "Space & Astronomy", "Environment & Sustainability", "Physics & Chemistry",
     "Biotechnology & Medicine", "Self-Improvement & Motivation", "Social Issues & Culture", "Psychology & Philosophy",
-    "Inspirational Stories", "Technology", "Programming", "Design", "Other"
+    "Inspirational Stories", "technology","books","art & design","self-improvement","health & wellness",
+    "business", "movies","travel","writing","photography","Music", "Food", "Programming", "Design", "Other"
   ];
 
   // Handle Thumbnail Change
@@ -112,13 +113,25 @@ const CreateBlog = () => {
             thumbnail: imageId,
             authorName: `${userProfile.firstName} ${userProfile.lastName}`,
             userId: userProfile.$id,
-          }
+            authorImage:userProfile?.profileId
+                }
         );
 
         if (!newBlog) {
           toast.error("Failed to create blog post.");
           return;
         }
+        const blogId = newBlog.$id;
+
+        // **Update User Profile's Blogs ID Immediately**
+        const updatedBlogsId = [...(userProfile.blogsId || []), blogId];
+    
+        await databases.updateDocument(
+          Config.appwriteDatabaseId,
+          Config.appwriteCollectionIdUsers,
+          userProfile.$id,
+          { blogsId: updatedBlogsId }
+        );
         toast.success("Blog created successfully!");
       }
 
@@ -190,8 +203,6 @@ const CreateBlog = () => {
           </div>
 
           {/* Content Editor */}
-          {/* <Editor apiKey="your-tinymce-api-key" onEditorChange={(newValue) => setBlogs({ ...blogs, content: newValue })} initialValue={blogs.content} /> */}
-
           <Editor
               apiKey='01m39qfm8zk41xbgadcj76cxcs08t20euz1odz6p256u5g8m'
               onEditorChange={(newValue, editor) => {

@@ -19,7 +19,7 @@ export function AuthProvider({ children }) {
     fetchAllBlogs();
   }, []);
 
-  // ✅ Fetch the logged-in user profile and their blogs
+  // Fetch the logged-in user profile and their blogs
   useEffect(() => {
     const fetchUserData = async () => {
       const storedEmail = localStorage.getItem('BlogToken');
@@ -123,27 +123,98 @@ const editUser = async (userId, updatedData) => {
     }
   };
 
-  // Delete a blog from the database
-  const deleteBlog = async (blogId) => {
+  const deleteBlog = async (blogId, userId) => {
+    const isConfirmed = window.confirm("Are you sure you want to delete this blog?");
+    if (!isConfirmed) return; // Stop execution if the user cancels
     try {
+      // Step 1: Fetch the user data to get their blogsId array
+      const userResponse = await databases.getDocument(
+        Config.appwriteDatabaseId,
+        Config.appwriteCollectionIdUsers,
+        userId
+      );
+  
+      if (!userResponse) {
+        console.error("User not found!");
+        return;
+      }
+  
+      // Step 2: Remove blogId from the user's blogsId array
+      const updatedBlogs = userResponse.blogsId.filter((id) => id !== blogId);
+  
+      await databases.updateDocument(
+        Config.appwriteDatabaseId,
+        Config.appwriteCollectionIdUsers,
+        userId,
+        { blogsId: updatedBlogs }
+      );
+  
+      console.log(`Removed blog ${blogId} from user ${userId}`);
+  
+      // Step 3: Now delete the actual blog document
       await databases.deleteDocument(
         Config.appwriteDatabaseId,
         Config.appwriteCollectionIdBlogs,
         blogId
       );
-
-      // Remove blog from state
+  
+      // Step 4: Update the state to remove the blog from UI
       setAllBlogs((prevBlogs) => prevBlogs.filter((blog) => blog.$id !== blogId));
-
+  
       console.log(`Blog ${blogId} deleted successfully.`);
     } catch (error) {
-      console.error('Error deleting blog:', error.message);
+      console.error("Error deleting blog:", error.message);
     }
   };
+  
+
+  //  save and unsave blog
+  const saveBlog = async (blogId) => {
+    if (!userProfile) return;
+  
+    try {
+      const updatedSavedBlogs = [...(userProfile.savedBlogs || []), blogId];
+  
+      await databases.updateDocument(
+        Config.appwriteDatabaseId,
+        Config.appwriteCollectionIdUsers,
+        userProfile.$id,
+        { savedBlogs: updatedSavedBlogs }
+      );
+  
+      setUserProfile((prev) => ({ ...prev, savedBlogs: updatedSavedBlogs }));
+  
+      console.log(`Blog ${blogId} saved successfully.`);
+    } catch (error) {
+      console.error(" Error saving blog:", error.message);
+    }
+  };
+  
+  const unsaveBlog = async (blogId) => {
+    if (!userProfile) return;
+  
+    try {
+      const updatedSavedBlogs = userProfile.savedBlogs.filter((id) => id !== blogId);
+  
+      await databases.updateDocument(
+        Config.appwriteDatabaseId,
+        Config.appwriteCollectionIdUsers,
+        userProfile.$id,
+        { savedBlogs: updatedSavedBlogs }
+      );
+  
+      setUserProfile((prev) => ({ ...prev, savedBlogs: updatedSavedBlogs }));
+  
+      console.log(`Blog ${blogId} unsaved successfully.`);
+    } catch (error) {
+      console.error("Error unsaving blog:", error.message);
+    }
+  };
+  
 
 
 
-  // ✅ Check if user is logged in
+  //  Check if user is logged in
   async function checkUser() {
     try {
       const currentUser = await account.get();
@@ -155,10 +226,10 @@ const editUser = async (userId, updatedData) => {
     }
   }
 
-  // ✅ User login
+  //  User login
   async function login(email, password) {
     try {
-      const session = await account.createEmailSession(email, password);
+      const session = await account.createEmailPasswordSession(email, password);
       localStorage.setItem('BlogToken', email);
 
       if (session) {
@@ -182,7 +253,7 @@ const editUser = async (userId, updatedData) => {
     }
   }
 
-  // ✅ User signup
+  // User signup
   async function signup(email, password, name) {
     try {
       await account.create(ID.unique(), email, password, name);
@@ -192,7 +263,7 @@ const editUser = async (userId, updatedData) => {
     }
   }
 
-  // ✅ User logout
+  // User logout
   async function logout() {
     try {
       await account.deleteSession('current');
@@ -209,6 +280,8 @@ const editUser = async (userId, updatedData) => {
       value={{
         userProfile,
         setUserProfile,
+        saveBlog, 
+        unsaveBlog,
         blogs,
         allBlogs,
         allUsers,

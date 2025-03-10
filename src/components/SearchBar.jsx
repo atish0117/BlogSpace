@@ -1,5 +1,5 @@
-import React from "react";
-
+import React ,{useEffect}from "react";
+import { useNavigate,useLocation } from "react-router-dom";
 const SearchBar = ({
   searchTerm,
   setSearchTerm,
@@ -7,6 +7,35 @@ const SearchBar = ({
   setSelectedCategory,
   categories,
 }) => {
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Update URL when category changes
+  const handleCategoryChange = (e) => {
+    const newCategory = e.target.value;
+    setSelectedCategory(newCategory);
+
+    // Update URL with selected category
+    const searchParams = new URLSearchParams(location.search);
+    if (newCategory === "all") {
+      searchParams.delete("category");
+    } else {
+      searchParams.set("category", newCategory);
+    }
+    navigate(`?${searchParams.toString()}`, { replace: true });
+  };
+
+  // Sync category with URL on first load
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const categoryFromURL = queryParams.get("category");
+    if (categoryFromURL) {
+      setSelectedCategory(categoryFromURL);
+    }
+  }, [location.search, setSelectedCategory]);
+
+
   return (
     <div className="mb-8">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -39,7 +68,7 @@ const SearchBar = ({
         {/* Category Filter Dropdown */}
         <select
           value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}
+          onChange={handleCategoryChange}
           className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         >
           <option value="all">All Categories</option>
