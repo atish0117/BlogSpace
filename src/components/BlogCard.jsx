@@ -1,21 +1,14 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Link } from "react-router-dom";
 import { storage } from "../lib/appwrite"; // Adjust import path
 import Config from "../lib/Config"; // Adjust import path
 import { Heart, Bookmark, BookmarkCheck, UserCircle, Share } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "react-hot-toast"; // Import toast notification
-
+import LikeButton from "./LikeButton";
 const BlogCard = ({ blog }) => {
   const { userProfile, saveBlog, unsaveBlog } = useAuth();
-  const [isLiked, setIsLiked] = useState(false);
   const isSaved = userProfile?.savedBlogs?.includes(blog.$id);
-
-  // Handle Like
-  const handleLike = () => {
-    setIsLiked(!isLiked);
-    // Logic to update like count in the backend (optional)
-  };
 
   // Handle Save/Unsave with Toast Notification
   const handleSave = async (e) => {
@@ -88,16 +81,7 @@ const BlogCard = ({ blog }) => {
 
       {/* Interactive Buttons (OUTSIDE THE LINK) */}
       <div className="flex justify-between items-center px-5 py-3 border-t bg-gray-50">
-        <button
-          onClick={handleLike}
-          className={`flex items-center gap-1 text-sm font-medium ${
-            isLiked ? "text-red-600" : "text-gray-500"
-          } hover:text-red-600 transition-colors`}
-        >
-          <Heart className="w-5 h-5" />
-          <span>{isLiked ? "Liked" : "Like"}</span>
-        </button>
-
+      <LikeButton blog={blog} />
         <button
           onClick={handleSave}
           className={`p-2 rounded-full transition-all ${

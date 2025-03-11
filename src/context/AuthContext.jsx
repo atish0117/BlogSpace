@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { account, databases } from '../lib/appwrite';
 import { Query, ID } from 'appwrite';
 import Config from '../lib/Config';
-
+import {toast} from 'react-hot-toast';
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
@@ -212,6 +212,67 @@ const editUser = async (userId, updatedData) => {
   };
   
 
+  //  Like/Unlike a blog
+  const toggleLike = async (blogId) => {
+    try {
+      if (!userProfile) {
+        toast.error("You must be logged in to like a blog!");
+        return;
+      }
+  
+      const isLiked = userProfile?.likedBlogs?.includes(blogId);
+  
+      // Optimistic UI update for instant feedback
+      setUserProfile((prev) => ({
+        ...prev,
+        likedBlogs: isLiked
+          ? prev.likedBlogs.filter((id) => id !== blogId) // Remove like
+          : [...(prev.likedBlogs || []), blogId], // Add like
+      }));
+  
+      // **Step 1: Update user's likedBlogs field**
+      const updatedUserLikes = isLiked
+        ? userProfile.likedBlogs.filter((id) => id !== blogId)
+        : [...(userProfile.likedBlogs || []), blogId];
+  
+      await databases.updateDocument(
+        Config.appwriteDatabaseId,
+        Config.appwriteCollectionIdUsers,
+        userProfile.$id,
+        { likedBlogs: updatedUserLikes }
+      );
+  
+      // **Step 2: Fetch the latest blog data**
+      const blogResponse = await databases.getDocument(
+        Config.appwriteDatabaseId,
+        Config.appwriteCollectionIdBlogs,
+        blogId
+      );
+  
+      const updatedLikes = isLiked
+        ? blogResponse.likes.filter((id) => id !== userProfile.$id)
+        : [...(blogResponse.likes || []), userProfile.$id];
+  
+      // **Step 3: Update likes in the blog document**
+      await databases.updateDocument(
+        Config.appwriteDatabaseId,
+        Config.appwriteCollectionIdBlogs,
+        blogId,
+        { likes: updatedLikes }
+      );
+  
+      toast.success(isLiked ? "Unliked the blog!" : "Liked the blog!");
+    } catch (error) {
+      console.error("Error toggling like:", error.message);
+      toast.error("Failed to update like.");
+    }
+  };
+  
+  
+  
+  
+  
+
 
 
   //  Check if user is logged in
@@ -274,7 +335,6 @@ const editUser = async (userId, updatedData) => {
       console.error('Logout error:', error.message);
     }
   }
-
   return (
     <AuthContext.Provider
       value={{
@@ -282,6 +342,7 @@ const editUser = async (userId, updatedData) => {
         setUserProfile,
         saveBlog, 
         unsaveBlog,
+        toggleLike, // like and unlike
         blogs,
         allBlogs,
         allUsers,

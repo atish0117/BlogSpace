@@ -1,20 +1,32 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Heart, MessageCircle, Share2, Bookmark } from "lucide-react";
+import { MessageCircle, Share2, Bookmark,BookmarkCheck } from "lucide-react";
 import { databases, storage } from "../lib/appwrite";
 import Config from "../lib/Config";
 import { toast } from "react-hot-toast";
 import { Query } from "appwrite";
-
+import { useAuth } from "../context/AuthContext";
+import LikeButton from "../components/LikeButton";
 export default function SingleBlog() {
   const { id } = useParams();
   const [blog, setBlog] = useState(null);
-  const [isLiked, setIsLiked] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
   const [relatedPosts, setRelatedPosts] = useState([]);
-
+  const { userProfile, saveBlog, unsaveBlog  } = useAuth();
+    const isSaved = userProfile?.savedBlogs?.includes(blog.$id);
+  
+    // Handle Save/Unsave with Toast Notification
+    const handleSave = async (e) => {
+      e.stopPropagation(); // Prevents unintended navigation
+      if (isSaved) {
+        await unsaveBlog(blog.$id);
+        toast.success("Blog removed from saved!"); // Toast for Unsave
+      } else {
+        await saveBlog(blog.$id);
+        toast.success("Blog saved successfully!"); // Toast for Save
+      }
+    };
   useEffect(() => {
     const fetchBlog = async () => {
       try {
@@ -44,17 +56,8 @@ export default function SingleBlog() {
     fetchBlog();
   }, [id]);
 
-  // Handle Like Button
-  const handleLike = () => {
-    setIsLiked(!isLiked);
-    toast.success(isLiked ? "Like removed" : "Liked!");
-  };
 
-  // Handle Save Button
-  const handleSave = () => {
-    setIsSaved(!isSaved);
-    toast.success(isSaved ? "Removed from saved" : "Saved!");
-  };
+
 
   // Handle Comment Submission
   const handleComment = (e) => {
@@ -137,10 +140,9 @@ export default function SingleBlog() {
         {/* Like, Comment, Share, Save Section */}
         <div className="flex items-center justify-between py-4 border-t border-b border-gray-200 mb-8">
           <div className="flex items-center space-x-4">
-            <button onClick={handleLike} className={`flex items-center space-x-1 ${isLiked ? "text-red-600" : "text-gray-600"}`}>
-              <Heart className={`w-5 h-5 ${isLiked ? "fill-current" : ""}`} />
-              <span>{blog.likes + (isLiked ? 1 : 0)}</span>
-            </button>
+          <div className="relative">
+      <LikeButton blog={blog} />
+    </div>
             <button className="flex items-center space-x-1 text-gray-600">
               <MessageCircle className="w-5 h-5" />
               <span>{comments.length}</span>
@@ -149,10 +151,14 @@ export default function SingleBlog() {
               <Share2 className="w-5 h-5" />
             </button>
           </div>
-          <button onClick={handleSave} className={`flex items-center space-x-1 ${isSaved ? "text-blue-600" : "text-gray-600"}`}>
-            <Bookmark className={`w-5 h-5 ${isSaved ? "fill-current" : ""}`} />
-            <span>{isSaved ? "Saved" : "Save"}</span>
-          </button>
+          <button
+          onClick={handleSave}
+          className={`p-2 rounded-full transition-all ${
+            isSaved ? "text-blue-600" : "text-gray-600 hover:text-blue-600"
+          }`}
+        >
+          {isSaved ? <BookmarkCheck size={20} /> : <Bookmark size={20} />}
+        </button>
         </div>
 
         {/* Comment Section */}
