@@ -27,34 +27,48 @@ export default function SingleBlog() {
         toast.success("Blog saved successfully!"); // Toast for Save
       }
     };
-  useEffect(() => {
-    const fetchBlog = async () => {
-      try {
-        const blogData = await databases.getDocument(
-          Config.appwriteDatabaseId,
-          Config.appwriteCollectionIdBlogs,
-          id
-        );
-        setBlog(blogData);
-        setComments(blogData.comments || []);
-
-        // Fetch Related Blogs
-        if (blogData.category.length > 0) {
-          const relatedData = await databases.listDocuments(
+    useEffect(() => {
+      const fetchBlog = async () => {
+        try {
+          const blogData = await databases.getDocument(
             Config.appwriteDatabaseId,
             Config.appwriteCollectionIdBlogs,
-            [Query.equal("category", blogData.category[0]), Query.limit(3)]
+            id
           );
-          setRelatedPosts(relatedData.documents);
+    
+          // Increment views only if it's the first visit in the session
+          const hasViewed = sessionStorage.getItem(`viewed_${id}`);
+          if (!hasViewed) {
+            sessionStorage.setItem(`viewed_${id}`, true); // Store view session
+            await databases.updateDocument(
+              Config.appwriteDatabaseId,
+              Config.appwriteCollectionIdBlogs,
+              id,
+              { views: (blogData.views || 0) + 1 }
+            );
+          }
+    
+          setBlog({ ...blogData, views: (blogData.views || 0) + 1 });
+          setComments(blogData.comments || []);
+    
+          // Fetch Related Blogs
+          if (blogData.category.length > 0) {
+            const relatedData = await databases.listDocuments(
+              Config.appwriteDatabaseId,
+              Config.appwriteCollectionIdBlogs,
+              [Query.equal("category", blogData.category[0]), Query.limit(3)]
+            );
+            setRelatedPosts(relatedData.documents);
+          }
+        } catch (error) {
+          console.error("Error fetching blog:", error.message);
+          toast.error("Failed to load blog.");
         }
-      } catch (error) {
-        console.error("Error fetching blog:", error.message);
-        toast.error("Failed to load blog.");
-      }
-    };
-
-    fetchBlog();
-  }, [id]);
+      };
+    
+      fetchBlog();
+    }, [id]);
+    
 
 
 

@@ -3,14 +3,13 @@ import { useAuth } from "../context/AuthContext";
 import { Camera, Edit2, Trash2,FileText, Eye, Calendar,Bookmark  } from "lucide-react";
 import { Link } from "react-router-dom";
 import { databases, storage } from "../lib/appwrite";
-import { ID } from "appwrite";
+import { ID ,Query} from "appwrite";
 import Config from "../lib/Config";
 import { toast } from "react-hot-toast";
 import BlogCard from "../components/BlogCard";
 export default function UserProfile() {
-  const { userProfile, setUserProfile,deleteUser, deleteBlog, editBlog, editUser } = useAuth();
+  const { userProfile, setUserProfile,deleteUser, editUser } = useAuth();
   console.log(userProfile, "userProfile in Profile page");
-  const [isEditing, setIsEditing] = useState(false);
   const [userBlogs, setUserBlogs] = useState([]); //  store all user's blog inside this state
   const [coverImage, setCoverImage] = useState("");
   const [profileImage, setProfileImage] = useState("");
@@ -120,11 +119,7 @@ export default function UserProfile() {
     }
   };
 
-  const handleDeleteBlog = (blogId) => {
-    console.log("Deleting blog:", blogId);
-  };
-
-  // Edit user's Data 
+ 
   // Open user Edit Modal
 const openEditModal = (user) => {
   setSelectedUser(user);
@@ -153,31 +148,28 @@ const handleSaveEdit = async () => {
   // fetch user"s all Blogs
   useEffect(() => {
     const fetchUserBlogs = async () => {
-      if (!userProfile?.blogsId || userProfile.blogsId.length === 0) {
-        console.log("No blogs found for this user.");
-        return;
-      }
+      if (!userProfile?.$id) return;
+  
       try {
-        // Fetch all blogs using the stored blog IDs
-        const blogPromises = userProfile.blogsId.map((blogId) =>
-          databases.getDocument(
-            Config.appwriteDatabaseId,
-            Config.appwriteCollectionIdBlogs,
-            blogId
-          )
+        // Fetch all blogs where userId matches the logged-in user's ID
+        const response = await databases.listDocuments(
+          Config.appwriteDatabaseId,
+          Config.appwriteCollectionIdBlogs,
+          [Query.equal("userId", userProfile.$id)]
         );
-
-        const blogs = await Promise.all(blogPromises);
-        setUserBlogs(blogs);
+  
+        setUserBlogs(response.documents);
       } catch (error) {
         console.error("Error fetching user blogs:", error.message);
       }
     };
-
+  
     fetchUserBlogs();
-  }, [userProfile]);
+  }, [userProfile?.$id]); // ✅ Only depend on `userProfile.$id`, not `userProfile`
   console.log(userBlogs, "all user's blogs");
 
+      // ✅ Dynamically Calculate Total Views
+const totalViews = userBlogs.reduce((acc, blog) => acc + (blog.views || 0), 0);
 
   // fetch user's saved blod 
   useEffect(() => {
@@ -302,9 +294,7 @@ const handleSaveEdit = async () => {
           <span className="text-gray-500 text-sm">Total Views</span>
         </div>
         <p className="mt-2 text-4xl font-bold text-gray-900 transition-all">
-          {userBlogs?.length > 0
-            ? userBlogs.reduce((acc, blog) => acc + (blog.views || 0), 0)
-            : 0}
+        {totalViews}
         </p>
       </div>
 
