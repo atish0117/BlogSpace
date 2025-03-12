@@ -1,15 +1,15 @@
-import React, { useState,useEffect } from "react";
-import { Link } from "react-router-dom";
+import React from "react";
+import { Link,useNavigate } from "react-router-dom";
 import { storage } from "../lib/appwrite"; // Adjust import path
 import Config from "../lib/Config"; // Adjust import path
-import { Heart, Bookmark, BookmarkCheck, UserCircle, Share } from "lucide-react";
+import { Bookmark, BookmarkCheck, UserCircle, Share, Trash2, Edit2, } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "react-hot-toast"; // Import toast notification
 import LikeButton from "./LikeButton";
-const BlogCard = ({ blog }) => {
-  const { userProfile, saveBlog, unsaveBlog } = useAuth();
+const BlogCard = ({ blog, showActions = false }) => {  // Accept showActions prop form UserProfile component
+  const { userProfile, saveBlog, unsaveBlog, deleteBlog } = useAuth();
   const isSaved = userProfile?.savedBlogs?.includes(blog.$id);
-
+  const navigate = useNavigate();
   // Handle Save/Unsave with Toast Notification
   const handleSave = async (e) => {
     e.stopPropagation(); // Prevents unintended navigation
@@ -22,6 +22,11 @@ const BlogCard = ({ blog }) => {
     }
   };
 
+ // Edit Blog function
+ const handleEditBlog= async(blog)=>{
+  // e.stopPropagation(); 
+  navigate("/createblog", {state:{blog}});
+}
   return (
     <div className="w-[350px] h-[500px] flex flex-col bg-white rounded-xl shadow-lg overflow-hidden transition-transform hover:scale-[1.02] hover:shadow-xl border border-gray-100 group">
       {/* Blog Thumbnail */}
@@ -66,7 +71,7 @@ const BlogCard = ({ blog }) => {
         </p>
 
         {/* Blog Metadata (Author, Date, Views) */}
-        <div className="mt-auto">
+        <div className="mt-auto relative">
           <div className="flex items-center gap-2 text-sm text-gray-700 mb-2">
             <UserCircle className="w-5 h-5 text-gray-500" />
             <span>{blog.authorName || "Unknown Author"}</span>
@@ -99,6 +104,22 @@ const BlogCard = ({ blog }) => {
           <span>Share</span>
         </button>
       </div>
+      {showActions && (
+        <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <button
+            onClick={() => handleEditBlog(blog)}
+            className="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+          >
+            <Edit2 className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => deleteBlog(blog.$id , blog.userId, blog.thumbnail)}
+            className="p-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
+      )}
     </div>
   );
 };

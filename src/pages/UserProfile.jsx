@@ -8,7 +8,7 @@ import Config from "../lib/Config";
 import { toast } from "react-hot-toast";
 import BlogCard from "../components/BlogCard";
 export default function UserProfile() {
-  const { userProfile, setUserProfile } = useAuth();
+  const { userProfile, setUserProfile,deleteUser, deleteBlog, editBlog, editUser } = useAuth();
   console.log(userProfile, "userProfile in Profile page");
   const [isEditing, setIsEditing] = useState(false);
   const [userBlogs, setUserBlogs] = useState([]); //  store all user's blog inside this state
@@ -16,6 +16,10 @@ export default function UserProfile() {
   const [profileImage, setProfileImage] = useState("");
   const [savedBlogs, setSavedBlogs] = useState([]);
 
+          // edit user's data state
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editData, setEditData] = useState({ firstName: "", lastName: "", email: "" });
   // update user cover image
   const handleCoverImageChange = async (e) => {
     const file = e.target.files?.[0];
@@ -119,6 +123,32 @@ export default function UserProfile() {
   const handleDeleteBlog = (blogId) => {
     console.log("Deleting blog:", blogId);
   };
+
+  // Edit user's Data 
+  // Open user Edit Modal
+const openEditModal = (user) => {
+  setSelectedUser(user);
+  setEditData({
+    firstName: user.firstName || "",
+    lastName: user.lastName || "",
+    email: user.email || "",
+    role: user.role || "User",
+  });
+  setIsEditModalOpen(true);
+};
+
+// Handle Edit Input Change
+const handleEditChange = (e) => {
+  const { name, value } = e.target;
+  setEditData((prev) => ({ ...prev, [name]: value }));
+};
+
+// Save Edited User
+const handleSaveEdit = async () => {
+  if (!selectedUser) return;
+  await editUser(selectedUser.$id, editData);
+  setIsEditModalOpen(false);
+};
 
   // fetch user"s all Blogs
   useEffect(() => {
@@ -243,7 +273,7 @@ export default function UserProfile() {
                     </div>
                     <div className="mt-5 flex justify-center sm:mt-0">
                       <button
-                        onClick={() => setIsEditing(true)}
+                        onClick={() => openEditModal(userProfile, "user")}
                         className="flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
                       >
                         <Edit2 className="w-4 h-4 mr-2" />
@@ -315,7 +345,7 @@ export default function UserProfile() {
               {userBlogs?.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {userBlogs.map((blog) => (
-                  <BlogCard key={blog.$id} blog={blog} />
+                  <BlogCard key={blog.$id} blog={blog} showActions={true}  />
                 ))}
               </div>
               ) : (
@@ -366,6 +396,59 @@ export default function UserProfile() {
               Not Found Profile
             </h2>
             <p className="text-gray-600"></p>
+          </div>
+        </div>
+      )}
+
+         {/* Edit User Modal */}
+          {isEditModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 className="text-xl font-bold mb-4">Edit User</h2>
+            <label className="block mb-2">
+              First Name
+              <input
+                type="text"
+                name="firstName"
+                value={editData.firstName}
+                onChange={handleEditChange}
+                className="w-full px-3 py-2 border rounded-md"
+              />
+            </label>
+            <label className="block mb-2">
+              Last Name
+              <input
+                type="text"
+                name="lastName"
+                value={editData.lastName}
+                onChange={handleEditChange}
+                className="w-full px-3 py-2 border rounded-md"
+              />
+            </label>
+            <label className="block mb-2">
+              Email
+              <input
+                type="email"
+                name="email"
+                value={editData.email}
+                disabled
+                className="w-full px-3 py-2 border rounded-md bg-gray-100"
+              />
+            </label>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setIsEditModalOpen(false)}
+                className="px-4 py-2 bg-gray-500 text-white rounded-md"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveEdit}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md"
+              >
+                Save Changes
+              </button>
+            </div>
           </div>
         </div>
       )}

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { MessageCircle, Share2, Bookmark,BookmarkCheck } from "lucide-react";
 import { databases, storage } from "../lib/appwrite";
 import Config from "../lib/Config";
@@ -14,7 +14,7 @@ export default function SingleBlog() {
   const [comments, setComments] = useState([]);
   const [relatedPosts, setRelatedPosts] = useState([]);
   const { userProfile, saveBlog, unsaveBlog  } = useAuth();
-    const isSaved = userProfile?.savedBlogs?.includes(blog.$id);
+    const isSaved = userProfile?.savedBlogs?.includes(id);
   
     // Handle Save/Unsave with Toast Notification
     const handleSave = async (e) => {

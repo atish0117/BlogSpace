@@ -78,7 +78,7 @@ const handleSaveEdit = async () => {
 
             {/* Admin Details */}
             <div className="ml-6 flex-1">
-              <h2 className="text-3xl font-bold text-gray-800  bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+              <h2 className="text-3xl font-bold text-gray-800  bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text ">
                 {userProfile?.firstName} {userProfile?.lastName}
               </h2>
               <p className="text-gray-600 text-sm mt-1 flex items-center">

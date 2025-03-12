@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { account, databases } from '../lib/appwrite';
+import { account, databases,storage } from '../lib/appwrite';
 import { Query, ID } from 'appwrite';
 import Config from '../lib/Config';
 import {toast} from 'react-hot-toast';
@@ -123,11 +123,12 @@ const editUser = async (userId, updatedData) => {
     }
   };
 
-  const deleteBlog = async (blogId, userId) => {
+  const deleteBlog = async (blogId, userId, blogThumbnailId) => {
     const isConfirmed = window.confirm("Are you sure you want to delete this blog?");
-    if (!isConfirmed) return; // Stop execution if the user cancels
+    if (!isConfirmed) return;
+  
     try {
-      // Step 1: Fetch the user data to get their blogsId array
+      // Step 1: Fetch user data
       const userResponse = await databases.getDocument(
         Config.appwriteDatabaseId,
         Config.appwriteCollectionIdUsers,
@@ -139,8 +140,8 @@ const editUser = async (userId, updatedData) => {
         return;
       }
   
-      // Step 2: Remove blogId from the user's blogsId array
-      const updatedBlogs = userResponse.blogsId.filter((id) => id !== blogId);
+      // Step 2: Remove blogId from user's blogsId array
+      const updatedBlogs = userResponse.blogsId?.filter((id) => id !== blogId);
   
       await databases.updateDocument(
         Config.appwriteDatabaseId,
@@ -148,26 +149,36 @@ const editUser = async (userId, updatedData) => {
         userId,
         { blogsId: updatedBlogs }
       );
-  
       console.log(`Removed blog ${blogId} from user ${userId}`);
   
-      // Step 3: Now delete the actual blog document
+      // Step 3: Delete the blog thumbnail (if exists)
+      if (blogThumbnailId) {
+        try {
+          await storage.deleteFile(Config.appwriteBucketId, blogThumbnailId);
+          console.log(`Deleted blog thumbnail: ${blogThumbnailId}`);
+        } catch (error) {
+          console.warn("Error deleting thumbnail, maybe it doesn't exist:", error.message);
+        }
+      }
+  
+      // Step 4: Delete the blog document
       await databases.deleteDocument(
         Config.appwriteDatabaseId,
         Config.appwriteCollectionIdBlogs,
         blogId
       );
+      console.log(`Blog ${blogId} deleted successfully.`);
   
-      // Step 4: Update the state to remove the blog from UI
+      // Step 5: Remove the deleted blog from UI state
       setAllBlogs((prevBlogs) => prevBlogs.filter((blog) => blog.$id !== blogId));
   
-      console.log(`Blog ${blogId} deleted successfully.`);
+      toast.success("Blog deleted successfully!");
     } catch (error) {
       console.error("Error deleting blog:", error.message);
+      toast.error("Failed to delete blog.");
     }
   };
   
-
   //  save and unsave blog
   const saveBlog = async (blogId) => {
     if (!userProfile) return;
