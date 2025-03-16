@@ -123,6 +123,64 @@ const editUser = async (userId, updatedData) => {
     }
   };
 
+  // const deleteBlog = async (blogId, userId, blogThumbnailId) => {
+  //   const isConfirmed = window.confirm("Are you sure you want to delete this blog?");
+  //   if (!isConfirmed) return;
+  
+  //   try {
+  //     // Step 1: Fetch user data
+  //     const userResponse = await databases.getDocument(
+  //       Config.appwriteDatabaseId,
+  //       Config.appwriteCollectionIdUsers,
+  //       userId
+  //     );
+  
+  //     if (!userResponse) {
+  //       console.error("User not found!");
+  //       return;
+  //     }
+  
+  //     // Step 2: Remove blogId from user's blogsId array
+  //     const updatedBlogs = userResponse.blogsId?.filter((id) => id !== blogId);
+  
+  //     await databases.updateDocument(
+  //       Config.appwriteDatabaseId,
+  //       Config.appwriteCollectionIdUsers,
+  //       userId,
+  //       { blogsId: updatedBlogs }
+  //     );
+  //     console.log(`Removed blog ${blogId} from user ${userId}`);
+  
+  //     // Step 3: Delete the blog thumbnail (if exists)
+  //     if (blogThumbnailId) {
+  //       try {
+  //         await storage.deleteFile(Config.appwriteBucketId, blogThumbnailId);
+  //         console.log(`Deleted blog thumbnail: ${blogThumbnailId}`);
+  //       } catch (error) {
+  //         console.warn("Error deleting thumbnail, maybe it doesn't exist:", error.message);
+  //       }
+  //     }
+  
+  //     // Step 4: Delete the blog document
+  //     await databases.deleteDocument(
+  //       Config.appwriteDatabaseId,
+  //       Config.appwriteCollectionIdBlogs,
+  //       blogId
+  //     );
+  //     console.log(`Blog ${blogId} deleted successfully.`);
+  
+  //     // Step 5: Remove the deleted blog from UI state
+  //     setAllBlogs((prevBlogs) => prevBlogs.filter((blog) => blog.$id !== blogId));
+  
+  //     toast.success("Blog deleted successfully!");
+  //   } catch (error) {
+  //     console.error("Error deleting blog:", error.message);
+  //     toast.error("Failed to delete blog.");
+  //   }
+  // };
+  
+  //  save and unsave blog
+  
   const deleteBlog = async (blogId, userId, blogThumbnailId) => {
     const isConfirmed = window.confirm("Are you sure you want to delete this blog?");
     if (!isConfirmed) return;
@@ -151,7 +209,34 @@ const editUser = async (userId, updatedData) => {
       );
       console.log(`Removed blog ${blogId} from user ${userId}`);
   
-      // Step 3: Delete the blog thumbnail (if exists)
+      // Step 3: Remove blogId from all users who liked or saved it
+      const allUsers = await databases.listDocuments(
+        Config.appwriteDatabaseId,
+        Config.appwriteCollectionIdUsers
+      );
+  
+      const updateUserPromises = allUsers.documents.map(async (user) => {
+        const hasLiked = user.likedBlogs?.includes(blogId);
+        const hasSaved = user.savedBlogs?.includes(blogId);
+  
+        if (hasLiked || hasSaved) {
+          const updatedLikedBlogs = user.likedBlogs?.filter((id) => id !== blogId);
+          const updatedSavedBlogs = user.savedBlogs?.filter((id) => id !== blogId);
+  
+          await databases.updateDocument(
+            Config.appwriteDatabaseId,
+            Config.appwriteCollectionIdUsers,
+            user.$id,
+            { likedBlogs: updatedLikedBlogs, savedBlogs: updatedSavedBlogs }
+          );
+  
+          console.log(`Removed blog ${blogId} from user ${user.$id}'s liked & saved blogs`);
+        }
+      });
+  
+      await Promise.all(updateUserPromises);
+  
+      // Step 4: Delete the blog thumbnail (if exists)
       if (blogThumbnailId) {
         try {
           await storage.deleteFile(Config.appwriteBucketId, blogThumbnailId);
@@ -161,7 +246,7 @@ const editUser = async (userId, updatedData) => {
         }
       }
   
-      // Step 4: Delete the blog document
+      // Step 5: Delete the blog document
       await databases.deleteDocument(
         Config.appwriteDatabaseId,
         Config.appwriteCollectionIdBlogs,
@@ -169,7 +254,7 @@ const editUser = async (userId, updatedData) => {
       );
       console.log(`Blog ${blogId} deleted successfully.`);
   
-      // Step 5: Remove the deleted blog from UI state
+      // Step 6: Remove the deleted blog from UI state
       setAllBlogs((prevBlogs) => prevBlogs.filter((blog) => blog.$id !== blogId));
   
       toast.success("Blog deleted successfully!");
@@ -179,7 +264,7 @@ const editUser = async (userId, updatedData) => {
     }
   };
   
-  //  save and unsave blog
+
   const saveBlog = async (blogId) => {
     if (!userProfile) return;
   
