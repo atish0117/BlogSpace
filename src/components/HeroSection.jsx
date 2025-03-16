@@ -1,5 +1,5 @@
 import { ArrowRight } from "lucide-react";
-
+import { Link } from "react-router-dom";
 const imageCollection = [
   {
     src: "https://images.unsplash.com/photo-1520975916090-3105956dac38",
@@ -52,12 +52,12 @@ export default function HeroSection() {
               "Explore insightful stories, fresh ideas, and endless inspiration—one read at a time."
             </p>
             <div className="mt-6 flex space-x-4">
-              <button className="px-6 py-3 text-white flex items-center bg-black rounded-lg hover:bg-gray-800 transition-all duration-300 group">
+              <Link to="/blog" className="px-6 py-3 text-white flex items-center bg-black rounded-lg hover:bg-gray-800 transition-all duration-300 group">
                 Start Reading
                 <span className="ml-2 transition-all duration-300 transform group-hover:translate-x-1">
                   <ArrowRight size={18} />
                 </span>
-              </button>
+              </Link>
             </div>
           </div>
         </div>

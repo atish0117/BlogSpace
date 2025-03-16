@@ -19,7 +19,7 @@ const CreateBlog = () => {
   const [blogs, setBlogs] = useState({
     title: existingBlog?.title || "",
     categories: existingBlog?.category || [],
-    content: existingBlog?.description || "",
+    content: existingBlog?.description || "hello",
   });
   
   const [thumbnail, setThumbnail] = useState(null);
@@ -204,12 +204,13 @@ const CreateBlog = () => {
 
           {/* Content Editor */}
           <Editor
-              apiKey='01m39qfm8zk41xbgadcj76cxcs08t20euz1odz6p256u5g8m'
+              apiKey='ygmdwso517ny0ivhbysns5hpejzy18c1pcb0vrr7wh9tqhdi'
               onEditorChange={(newValue, editor) => {
                 setBlogs({ ...blogs, content: newValue });
                 setText(editor.getContent({ format: "text" }));
               }}
-              initialValue={blogs.content}
+            
+              initialValue={blogs?.content && typeof blogs.content === "string" ? blogs.content.trim() : "Write your blog here..."}
               init={{
                 height: 300,
                 plugins: [
@@ -221,7 +222,7 @@ const CreateBlog = () => {
                   // Early access to document converters
                   'importword', 'exportword', 'exportpdf'
                 ],
-                toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+                toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
                 tinycomments_mode: 'embedded',
                 tinycomments_author: 'Author name',
                 mergetags_list: [
