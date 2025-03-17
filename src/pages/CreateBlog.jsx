@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Editor } from "@tinymce/tinymce-react";
+// import { Editor } from "react-tinymce";
 import { toast } from "react-hot-toast";
 import { useNavigate, useLocation } from "react-router-dom";
 import { databases, storage } from "../lib/appwrite";
