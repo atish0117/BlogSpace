@@ -12,7 +12,6 @@
   "dependencies": {
     "@hookform/resolvers": "^4.1.2",
     "@tailwindcss/vite": "^4.0.9",
-    "@tinymce/tinymce-react": "^6.0.0",
     "appwrite": "^17.0.0",
     "date-fns": "^4.1.0",
     "lucide-react": "^0.477.0",
