@@ -12,7 +12,6 @@
   "dependencies": {
     "@hookform/resolvers": "^4.1.2",
     "@tailwindcss/vite": "^4.0.9",
-    "@tinymce/tinymce-react": "^6.0.0",
     "appwrite": "^17.0.0",
     "date-fns": "^4.1.0",
     "lucide-react": "^0.477.0",
@@ -22,10 +21,11 @@
     "react-hot-toast": "^2.5.2",
     "react-icons": "^5.5.0",
     "react-router-dom": "^7.2.0",
+    "suneditor": "^2.47.5",
+    "suneditor-react": "^3.6.1",
     "swiper": "^11.2.5",
     "tailwind-scrollbar-hide": "^2.0.0",
-    "tailwindcss": "^4.0.9",
-    "tinymce": "^7.7.0"
+    "tailwindcss": "^4.0.9"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
