@@ -6,6 +6,8 @@ import { Bookmark, BookmarkCheck, UserCircle, Share, Trash2, Edit2, } from "luci
 import { useAuth } from "../context/AuthContext";
 import { toast } from "react-hot-toast"; // Import toast notification
 import LikeButton from "./LikeButton";
+import ShareButton from "./ShareButton";
+
 const BlogCard = ({ blog, showActions = false }) => {  // Accept showActions prop form UserProfile component
   const { userProfile, saveBlog, unsaveBlog, deleteBlog } = useAuth();
   const isSaved = userProfile?.savedBlogs?.includes(blog.$id);
@@ -97,11 +99,9 @@ const BlogCard = ({ blog, showActions = false }) => {  // Accept showActions pro
         </button>
 
         <button
-          onClick={(e) => e.stopPropagation()} // Prevents unintended navigation
           className="flex items-center gap-1 text-sm font-medium text-gray-500 hover:text-blue-600 transition-colors"
         >
-          <Share className="w-5 h-5" />
-          <span>Share</span>
+            <ShareButton />
         </button>
       </div>
       {showActions && (

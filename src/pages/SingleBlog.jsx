@@ -7,6 +7,7 @@ import { toast } from "react-hot-toast";
 import { Query } from "appwrite";
 import { useAuth } from "../context/AuthContext";
 import LikeButton from "../components/LikeButton";
+import ShareButton from "../components/ShareButton";
 export default function SingleBlog() {
   const { id } = useParams();
   const [blog, setBlog] = useState(null);
@@ -152,19 +153,24 @@ export default function SingleBlog() {
         </div>
 
         {/* Like, Comment, Share, Save Section */}
-        <div className="flex items-center justify-between py-4 border-t border-b border-gray-200 mb-8">
-          <div className="flex items-center space-x-4">
+        <div className="flex items-center justify-between  py-4 border-t border-b border-gray-200 mb-8">
+          <div className="flex items-center  relative space-x-4 w-46">
+
           <div className="relative">
-      <LikeButton blog={blog} />
-    </div>
+              <LikeButton blog={blog} />
+          </div>
+
             <button className="flex items-center space-x-1 text-gray-600">
               <MessageCircle className="w-5 h-5" />
               <span>{comments.length}</span>
             </button>
-            <button className="flex items-center space-x-1 text-gray-600">
-              <Share2 className="w-5 h-5" />
+
+            <button className=" text-gray-600 absolute right-0 -bottom-1 ">
+              <ShareButton/>
             </button>
+
           </div>
+
           <button
           onClick={handleSave}
           className={`p-2 rounded-full transition-all ${
@@ -173,6 +179,7 @@ export default function SingleBlog() {
         >
           {isSaved ? <BookmarkCheck size={20} /> : <Bookmark size={20} />}
         </button>
+
         </div>
 
         {/* Comment Section */}
