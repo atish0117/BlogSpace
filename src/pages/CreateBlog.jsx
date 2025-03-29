@@ -8,6 +8,7 @@ import { Upload, Tag } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import Config from "../lib/Config";
 import { ID } from "appwrite";
+import CategorySelector from "../components/CategorySelector"
 
 const CreateBlog = () => {
   const navigate = useNavigate();
@@ -29,7 +30,18 @@ const CreateBlog = () => {
   );
   const [loading, setLoading] = useState(false);
 
-  const categories = ["Development", "AI", "Health", "Music", "Design", "Other"];
+  // const categories = [
+  //   "Development", "Web Development", "Mobile Apps", "AI & Machine Learning", "Cybersecurity",
+  //   "DevOps & Cloud Computing", "Programming & Coding", "Entrepreneurship & Startups", "Investing & Stock Market",
+  //   "Personal Finance & Budgeting", "Marketing & SEO", "E-commerce & Dropshipping", "Freelancing & Remote Work",
+  //   "Health & Fitness", "Mental Wellness & Self-Care", "Travel & Adventure", "Food & Cooking", "Fashion & Beauty",
+  //   "Home & Living", "Job Search & Career Growth", "Productivity & Time Management", "Study & Learning Hacks",
+  //   "Leadership & Management", "Movies & TV Shows", "Music & Podcasts", "Gaming & Esports", "Books & Literature",
+  //   "Pop Culture & Celebrities", "Space & Astronomy", "Environment & Sustainability", "Physics & Chemistry",
+  //   "Biotechnology & Medicine", "Self-Improvement & Motivation", "Social Issues & Culture", "Psychology & Philosophy",
+  //   "Inspirational Stories", "technology","books","art & design","self-improvement","health & wellness",
+  //   "business", "movies","travel","writing","photography","Music", "Food", "Programming", "Design", "Other"
+  // ];
 
   // Handle Thumbnail Change
   const handleThumbnailChange = (e) => {
@@ -42,17 +54,28 @@ const CreateBlog = () => {
     }
   };
 
-  // Handle Category Selection
-  const handleCategoryChange = (category) => {
-    setBlogs((prev) => ({
-      ...prev,
-      categories: prev.categories.includes(category)
-        ? prev.categories.filter((c) => c !== category)
-        : prev.categories.length < 5
-        ? [...prev.categories, category]
-        : prev.categories,
-    }));
-  };
+ // Handle Category Selection
+// const handleCategoryChange = (category) => {
+//   setBlogs((prev) => {
+//     if (prev.categories.includes(category)) {
+//       // Remove category if already selected
+//       return {
+//         ...prev,
+//         categories: prev.categories.filter((c) => c !== category),
+//       };
+//     } else if (prev.categories.length >= 5) {
+//       // Show error if user selects more than 5 categories
+//       toast.error("You can select up to 5 categories only!");
+//       return prev;
+//     }
+
+//     // Add category if less than 5 are selected
+//     return {
+//       ...prev,
+//       categories: [...prev.categories, category],
+//     };
+//   });
+// };
 
   // Upload Image
   const uploadImage = async () => {
@@ -173,35 +196,32 @@ const CreateBlog = () => {
           </div>
 
           {/* Categories */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Select Categories (Max-5)</label>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  type="button"
-                  onClick={() => handleCategoryChange(category)}
-                  className={`px-3 py-1.5 rounded-full text-sm font-medium ${
-                    blogs.categories.includes(category) ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-800 hover:bg-gray-300"
-                  }`}
-                >
-                  <Tag className="w-4 h-4 mr-1" />
-                  {category}
-                </button>
-              ))}
-            </div>
-          </div>
+          <CategorySelector
+        selectedCategories={blogs.categories}
+        setSelectedCategories={(categories) => setBlogs({ ...blogs, categories })}
+      />
+
+
+          
 
           {/* Content Editor (SunEditor) */}
           <label className="block text-sm font-medium text-gray-700">Blog Content</label>
           <SunEditor
-            setContents={blogs.content}
-            onChange={(content) => setBlogs({ ...blogs, content })}
-            setOptions={{
-              height: 300,
-              buttonList: [["bold", "italic", "underline"], ["image", "link"], ["list", "align"], ["table", "fullScreen"]],
-            }}
-          />
+  setContents={blogs.content}
+  onChange={(content) => setBlogs({ ...blogs, content })}
+  setOptions={{
+    height: "500px", // Increases editor height
+    defaultStyle: "font-size: 18px; padding: 10px;", // Increases text size & padding
+    buttonList: [
+      ["undo", "redo"],
+      ["bold", "italic", "underline", "strike"],
+      ["fontSize", "formatBlock", "align", "list"],
+      ["image", "link", "video", "table"],
+      ["fullScreen", "preview"]
+    ],
+  }}
+/>
+
 
           {/* Submit Button */}
           <button type="submit" className="w-full bg-indigo-600 text-white font-medium py-2 px-4 rounded-md hover:bg-indigo-700">
