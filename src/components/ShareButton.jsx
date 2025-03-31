@@ -40,39 +40,43 @@ const ShareButton = () => {
   }, [showOptions]);
 
   return (
-    <div className="relative mt-6 inline-block" ref={dropdownRef}>
+    <div className="relative inline-block" ref={dropdownRef}>
       {/* Share Button */}
       <button
         onClick={() => setShowOptions(!showOptions)}
-        className=" text-gray-700 px-4 py-2  rounded flex items-center gap-2"
+        className=" text-gray-700  rounded flex items-center gap-2"
       >
         <Share /> Share
       </button>
 
       {/* Share Options (Dropdown) */}
       {showOptions && (
-        <div className="absolute -top-56 -right-4 mt-2 bg-gray-500 text-white shadow-lg rounded-lg p-3 space-y-2 w-34 border z-10">
-          {/* Downward Arrow */}
+ <div
+ className={`absolute -top-62 -right-4 mt-2 w-36 p-3 border border-white/20 
+   bg-white/10 backdrop-blur-lg text-white shadow-xl rounded-lg 
+   transition-all duration-300 ease-in-out origin-top 
+   ${showOptions ? "opacity-100 scale-95" : "opacity-0 scale-80"}`}
+>          {/* Downward Arrow */}
           <div className="absolute -bottom-5 left-1/2 transform -translate-x-1/2">
             <svg width="50" height="25" viewBox="0 0 50 25">
-              <polygon points="0,0 50,0 25,25" fill="rgb(107, 114, 128)" />
+              <polygon points="0,0 50,0 25,25" fill="rgba(255, 255, 255, 0.2)" />
             </svg>
           </div>
 
           {/* Social Media Links */}
-          <a href={socialMediaLinks.whatsapp} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 p-1 hover:bg-gray-700 rounded">
+          <a href={socialMediaLinks.whatsapp} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 p-2 hover:bg-white/20 rounded">
             <FaWhatsapp className="text-green-500" /> WhatsApp
           </a>
-          <a href={socialMediaLinks.facebook} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 p-1 hover:bg-gray-700 rounded">
+          <a href={socialMediaLinks.facebook} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 p-2 hover:bg-white/20 rounded">
             <FaFacebook className="text-blue-600" /> Facebook
           </a>
-          <a href={socialMediaLinks.twitter} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 p-1 hover:bg-gray-700 rounded">
+          <a href={socialMediaLinks.twitter} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 p-2 hover:bg-white/20 rounded">
             <FaXTwitter className="text-black" /> X (Twitter)
           </a>
-          <a href={socialMediaLinks.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 p-1 hover:bg-gray-700 rounded">
+          <a href={socialMediaLinks.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 p-2 hover:bg-white/20 rounded">
             <FaLinkedin className="text-blue-500" /> LinkedIn
           </a>
-          <button onClick={copyToClipboard} className="flex items-center gap-2 p-2 hover:bg-gray-700 rounded w-full text-left">
+          <button onClick={copyToClipboard} className="flex items-center gap-2 p-2 hover:bg-white/20 rounded w-full text-left">
             <FaCopy className="text-gray-300" /> Copy Link
           </button>
         </div>

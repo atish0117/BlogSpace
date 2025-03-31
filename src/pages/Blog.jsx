@@ -64,19 +64,21 @@ export default function Blog() {
 
           {/* Category Filter Dropdown (Scrollable for many categories) */}
           <div className="relative w-full md:w-1/4">
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm"
-            >
-              <option value="All">All Categories</option>
-              {categories.map((category) => (
-                <option key={category} value={category} className="text-sm">
-                  {category}
-                </option>
-              ))}
-            </select>
-          </div>
+  <select
+    value={selectedCategory}
+    onChange={(e) => setSelectedCategory(e.target.value)}
+    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 shadow-sm bg-white 
+              max-w-[90vw] md:max-w-full overflow-hidden"
+  >
+    <option value="All">All Categories</option>
+    {categories.map((category) => (
+      <option key={category} value={category} className="text-sm">
+        {category}
+      </option>
+    ))}
+  </select>
+</div>
+
         </div>
 
         {/* Blog Grid */}

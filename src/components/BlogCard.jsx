@@ -87,23 +87,26 @@ const BlogCard = ({ blog, showActions = false }) => {  // Accept showActions pro
       </div>
 
       {/* Interactive Buttons (OUTSIDE THE LINK) */}
-      <div className="flex justify-between items-center px-5 py-3 border-t bg-gray-50">
-      <LikeButton blog={blog} />
-        <button
-          onClick={handleSave}
-          className={`p-2 rounded-full transition-all ${
-            isSaved ? "text-blue-600" : "text-gray-600 hover:text-blue-600"
-          }`}
-        >
-          {isSaved ? <BookmarkCheck size={20} /> : <Bookmark size={20} />}
-        </button>
+      <div className="flex items-center justify-between px-5 py-3 border-t bg-gray-50">
+  {/* Like Button */}
+  <LikeButton blog={blog} />
 
-        <button
-          className="flex items-center gap-1 text-sm font-medium text-gray-500 hover:text-blue-600 transition-colors"
-        >
-            <ShareButton />
-        </button>
-      </div>
+  {/* Save Button */}
+  <button
+    onClick={handleSave}
+    className={`p-2 rounded-full transition-all ${
+      isSaved ? "text-blue-600" : "text-gray-600 hover:text-blue-600"
+    }`}
+  >
+    {isSaved ? <BookmarkCheck size={20} /> : <Bookmark size={20} />}
+  </button>
+
+  {/* Share Button */}
+  <div className="flex items-center">
+    <ShareButton />
+  </div>
+</div>
+
       {showActions && (
         <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <button
