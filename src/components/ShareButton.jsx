@@ -53,13 +53,13 @@ const ShareButton = () => {
       {showOptions && (
  <div
  className={`absolute -top-62 -right-4 mt-2 w-36 p-3 border border-white/20 
-   bg-white/10 backdrop-blur-lg text-white shadow-xl rounded-lg 
+   bg-white/10 backdrop-blur-lg text-gray-500 shadow-xl rounded-lg 
    transition-all duration-300 ease-in-out origin-top 
    ${showOptions ? "opacity-100 scale-95" : "opacity-0 scale-80"}`}
 >          {/* Downward Arrow */}
           <div className="absolute -bottom-5 left-1/2 transform -translate-x-1/2">
             <svg width="50" height="25" viewBox="0 0 50 25">
-              <polygon points="0,0 50,0 25,25" fill="rgba(255, 255, 255, 0.2)" />
+              <polygon points="0,0 50,0 25,25" fill="rgba(255, 255, 255, 0.7)" />
             </svg>
           </div>
 
