@@ -14,6 +14,7 @@ export default function SingleBlog() {
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
   const [relatedPosts, setRelatedPosts] = useState([]);
+  const [loading, setLoading] = useState(true); 
   const { userProfile, saveBlog, unsaveBlog  } = useAuth();
     const isSaved = userProfile?.savedBlogs?.includes(id);
   
@@ -28,9 +29,11 @@ export default function SingleBlog() {
         toast.success("Blog saved successfully!"); // Toast for Save
       }
     };
+
     useEffect(() => {
       const fetchBlog = async () => {
         try {
+          setLoading(true);
           const blogData = await databases.getDocument(
             Config.appwriteDatabaseId,
             Config.appwriteCollectionIdBlogs,
@@ -65,6 +68,9 @@ export default function SingleBlog() {
           console.error("Error fetching blog:", error.message);
           toast.error("Failed to load blog.");
         }
+        finally {
+          setLoading(false); // 👈 Stop loading once data is fetched
+        }
       };
     
       fetchBlog();
@@ -92,10 +98,13 @@ export default function SingleBlog() {
     toast.success("Comment added!");
   };
 
-  if (!blog) {
-    return <p className="text-center text-gray-500">Loading blog...</p>;
+  // Show a loading spinner or message while fetching data
+  if (loading) {
+    return <div className="flex justify-center items-center h-screen text-xl font-semibold">Loading...</div>;
   }
-  console.log("image ",blog.authorImage)
+
+  // Show nothing if blog data is still null (extra safety)
+  if (!blog) return null;
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
@@ -107,19 +116,19 @@ export default function SingleBlog() {
                 Config.appwriteBucketId,
                 blog?.authorImage
               )}
-              alt={blog.authorName}
+              alt={blog?.authorName}
               className="h-12 w-12 rounded-full"
             />
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">{blog.authorName}</h3>
+              <h3 className="text-lg font-semibold text-gray-900">{blog?.authorName}</h3>
               <div className="flex items-center space-x-2 text-sm text-gray-500">
-                <span>{new Date(blog.$createdAt).toLocaleDateString()}</span>
+                <span>{new Date(blog?.$createdAt).toLocaleDateString()}</span>
                 <span>•</span>
-                <span>{blog.readTime || "5 min read"}</span>
+                <span>{blog?.readTime || "5 min read"}</span>
               </div>
             </div>
           </div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">{blog.title}</h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">{blog?.title}</h1>
           
           {/* Category Tags (Max 2 Categories) */}
           <div className="flex flex-wrap gap-2 mb-4">
@@ -142,14 +151,14 @@ export default function SingleBlog() {
 
         <div className="mb-8">
           <img
-            src={storage.getFilePreview(Config.appwriteBucketId, blog.thumbnail) || "/default-thumbnail.jpg"}
-            alt={blog.title}
+            src={storage.getFilePreview(Config.appwriteBucketId, blog?.thumbnail) || "/default-thumbnail.jpg"}
+            alt={blog?.title}
             className="w-full h-96 object-cover rounded-lg"
           />
         </div>
 
         <div className="prose prose-lg max-w-none mb-12">
-          <div dangerouslySetInnerHTML={{ __html: blog.description }} />
+          <div dangerouslySetInnerHTML={{ __html: blog?.description }} />
         </div>
 
         {/* Like, Comment, Share, Save Section */}
