@@ -13,7 +13,7 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <img src="1472935.png" alt="Logo" className="h-10 w-auto" />
+            <img src="/1472935.png" alt="Logo" className="h-10 w-auto" />
             <Link to="/" className="text-xl font-bold text-gray-800 ml-2">
               BlogSpace
             </Link>

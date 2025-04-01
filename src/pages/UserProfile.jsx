@@ -61,9 +61,9 @@ export default function UserProfile() {
         { coverId: uploadedFile.$id } // Store only the image ID
       );
 
-      toast.success("✅ Cover image updated successfully!");
+      toast.success(" Cover image updated successfully!");
     } catch (error) {
-      console.error("❌ Error updating cover image:", error.message);
+      console.error(" Error updating cover image:", error.message);
       toast.error("Failed to update cover image!");
     }
   };
@@ -168,7 +168,7 @@ const handleSaveEdit = async () => {
   }, [userProfile?.$id]); // ✅ Only depend on `userProfile.$id`, not `userProfile`
   console.log(userBlogs, "all user's blogs");
 
-      // ✅ Dynamically Calculate Total Views
+      // Dynamically Calculate Total Views
 const totalViews = userBlogs.reduce((acc, blog) => acc + (blog.views || 0), 0);
 
   // fetch user's saved blod 
