@@ -88,7 +88,7 @@ const CreateBlog = () => {
       return null;
     }
   };
-
+console.log("existingBlog.thumbnail",existingBlog?.thumbnail)
   // Handle Submit
   const handleSubmit = async (e) => {
     e.preventDefault();

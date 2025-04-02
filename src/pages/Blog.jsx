@@ -58,7 +58,7 @@ export default function Blog() {
               placeholder="Search blogs..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-gray-700 shadow-sm"
             />
           </div>
 
@@ -67,7 +67,7 @@ export default function Blog() {
   <select
     value={selectedCategory}
     onChange={(e) => setSelectedCategory(e.target.value)}
-    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 shadow-sm bg-white 
+    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-gray-500 shadow-sm bg-white 
               max-w-[90vw] md:max-w-full overflow-hidden"
   >
     <option value="All">All Categories</option>

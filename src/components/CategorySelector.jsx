@@ -13,7 +13,8 @@ const categories = [
   "Pop Culture & Celebrities", "Space & Astronomy", "Environment & Sustainability", "Physics & Chemistry",
   "Biotechnology & Medicine", "Self-Improvement & Motivation", "Social Issues & Culture", "Psychology & Philosophy",
   "Inspirational Stories", "Technology", "Books", "Art & Design", "Self-Improvement", "Health & Wellness",
-  "Business", "Movies", "Travel", "Writing", "Photography", "Music", "Food", "Programming", "Design", "Other"
+  "Business", "Movies", "Travel", "Writing", "Photography", "Music", "Food", "Programming", "Design", "SaveThePlanet" ,"Innovation","NatureMeetsTechnology","EcoFriendly ",
+  "EnvironmentalAwareness","Other"
 ];
 
 const CategorySelector = ({ selectedCategories, setSelectedCategories }) => {

@@ -4,6 +4,7 @@ import CategoriesSection from '../components/CategoriesSection';
 import Testimonials from '../components/Testimonials';
 import Newsletter from '../components/Newsletter';
 import BlogSlider from '../components/BlogSlider';
+import Feedback from '../components/Feedback';
 export default function Home() {
   return (
     <div className="min-h-screen bg-">
@@ -12,6 +13,7 @@ export default function Home() {
       <FeaturedBlogPosts/>
       <CategoriesSection/>
       <Testimonials/>
+      <Feedback/>
       <Newsletter/>
 
       {/* Featured Blogs Section */}

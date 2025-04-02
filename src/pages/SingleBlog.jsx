@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { MessageCircle, Share2, Bookmark, BookmarkCheck } from "lucide-react";
 import { databases, storage } from "../lib/appwrite";
+import { ID } from "appwrite";
 import Config from "../lib/Config";
 import { toast } from "react-hot-toast";
 import { Query } from "appwrite";
@@ -16,9 +17,10 @@ export default function SingleBlog() {
   const [relatedPosts, setRelatedPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [authorImage, setAuthorImage] = useState(null);
-  const { userProfile, saveBlog, unsaveBlog } = useAuth();
+  const [thumbnailUrl, setThumbnailUrl] = useState("/default-thumbnail.jpg");
+  const { userProfile,user, saveBlog, unsaveBlog } = useAuth();
   const isSaved = userProfile?.savedBlogs?.includes(id);
-  
+
   // Handle Save/Unsave with Toast Notification
   const handleSave = async (e) => {
     e.stopPropagation(); // Prevents unintended navigation
@@ -73,6 +75,14 @@ export default function SingleBlog() {
           }
         }
 
+         // Fetch Comments
+        const commentData = await databases.listDocuments(
+          Config.appwriteDatabaseId,
+          Config.appwriteCollectionIdComments, // Collection for comments
+          [Query.equal("blogId", id), Query.orderDesc("$createdAt")]
+        );
+        setComments(commentData.documents);
+
         // Fetch Related Blogs
         if (blogData.category.length > 0) {
           const relatedData = await databases.listDocuments(
@@ -93,24 +103,42 @@ export default function SingleBlog() {
     fetchBlog();
   }, [id]);
 
-  console.log("auther image ", authorImage);
+  // for thunbnail image are fetch
+  useEffect(() => {
+    if (blog?.thumbnail) {
+      setThumbnailUrl(storage.getFilePreview(Config.appwriteBucketId, blog.thumbnail));
+    }
+  }, [blog?.thumbnail]);
 
-  // Handle Comment Submission
-  const handleComment = (e) => {
+       // Handle New Comment Submission
+  const handleComment = async (e) => {
     e.preventDefault();
-    if (comment.trim() === "") return;
+    if (comment.trim() === "") return toast.error("Comment cannot be empty!");
+    if (!user) return toast.error("You must be logged in to comment.");
 
-    const newComment = {
-      id: comments.length + 1,
-      author: "Anonymous",
-      image: "/default-user.png",
-      content: comment,
-      date: "Just now",
-    };
+    try {
+      const newComment = await databases.createDocument(
+        Config.appwriteDatabaseId,
+        Config.appwriteCollectionIdComments,
+        ID.unique(),
+        {
+          blogId: blog?.$id,
+          userId: userProfile?.$id, // Store user ID
+          author: userProfile?.firstName + userProfile?.lastName || "Anonymous",
+          profileImage: userProfile?.profileId || null,  // Store image ID
+          content: comment,
+        }
+      );
 
-    setComments([...comments, newComment]);
-    setComment("");
-    toast.success("Comment added!");
+      // Add new comment to the list without refreshing
+      setComments([newComment, ...comments]);
+      setComment("");
+
+      toast.success("Comment added!");
+    } catch (error) {
+      console.error("Error posting comment:", error.message);
+      toast.error("Failed to add comment.");
+    }
   };
 
   // Show a loading spinner or message while fetching data
@@ -122,10 +150,12 @@ export default function SingleBlog() {
     );
   }
 
+  console.log("thumbnailURL",thumbnailUrl)
   // Show nothing if blog data is still null (extra safety)
   if (!blog) return null;
-  console.log("image ", blog?.authorImage);
   console.log("all detail in blog ", blog);
+
+  console.log("Blog Thumbnail:", blog?.thumbnail);
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
@@ -184,16 +214,12 @@ export default function SingleBlog() {
         </header>
 
         <div className="mb-8">
-          <img
-            src={
-              storage.getFilePreview(
-                Config.appwriteBucketId,
-                blog?.thumbnail
-              ) || "/default-thumbnail.jpg"
-            }
-            alt={blog?.title}
-            className="w-full h-96 object-cover rounded-lg"
-          />
+        <img
+  src=
+    {thumbnailUrl}
+  alt={blog?.title}
+  className="w-full h-96 object-cover rounded-lg"
+/>
         </div>
 
         <div className="prose prose-lg max-w-none mb-12">
@@ -209,12 +235,12 @@ export default function SingleBlog() {
 
             <button className="flex items-center space-x-1 text-gray-600">
               <MessageCircle className="w-5 h-5" />
-              <span>{comments.length}</span>
+              <span>{comments?.length}</span>
             </button>
 
-            <button className=" text-gray-600 absolute right-0 -bottom-1 ">
+            {/* <button className=" text-gray-600 absolute right-0 -bottom-1 "> */}
               <ShareButton />
-            </button>
+            {/* </button> */}
           </div>
 
           <button
@@ -230,27 +256,39 @@ export default function SingleBlog() {
         {/* Comment Section */}
         <section className="mb-12">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Comments</h2>
-          <form onSubmit={handleComment} className="mb-8">
-            <textarea
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              placeholder="Add a comment..."
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-              rows="3"
-            />
-            <button
-              type="submit"
-              className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-            >
-              Post Comment
-            </button>
-          </form>
+          {user ? (
+            <form onSubmit={handleComment} className="mb-8">
+              <textarea
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                placeholder="Add a comment..."
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                rows="3"
+              />
+              <button
+                type="submit"
+                className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              >
+                Post Comment
+              </button>
+            </form>
+          ) : (
+            <p className="text-gray-500">Login to add a comment.</p>
+          )}
 
           <div className="space-y-6">
-            {comments.map((comment, index) => (
+            {comments?.map((comment, index) => (
               <div key={index} className="flex space-x-4">
-                <img
-                  src={comment.image}
+               <img
+                  src={
+                    comment.profileImage
+                      ? storage.getFilePreview(
+                          Config.appwriteBucketId,
+                          comment.profileImage
+                        )
+                      : `https://api.dicebear.com/9.x/identicon/svg?seed=${comment?.author} || "User"
+                        }`
+                  }
                   alt={comment.author}
                   className="h-10 w-10 rounded-full"
                 />
@@ -259,6 +297,9 @@ export default function SingleBlog() {
                     {comment.author}
                   </h4>
                   <p className="text-gray-700">{comment.content}</p>
+                  <span className="text-xs text-gray-500">
+                    {new Date(comment.$createdAt).toLocaleString()}
+                  </span>
                 </div>
               </div>
             ))}

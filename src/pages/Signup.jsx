@@ -143,7 +143,7 @@ export default function Signup() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-balck focus:border-gray-800 transition duration-300"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-balck focus:border-gray-700 transition duration-300"
               />
             </div>
           </div>
@@ -160,7 +160,7 @@ export default function Signup() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2  focus:outline-none focus:ring-balck focus:border-gray-800 transition duration-300"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2  focus:outline-none focus:ring-balck focus:border-gray-700 transition duration-300"
               />
             </div>
           </div>
@@ -177,7 +177,7 @@ export default function Signup() {
                 required
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-balck focus:border-gray-800 transition duration-300"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-balck focus:border-gray-700 transition duration-300"
               />
             </div>
           </div>
@@ -186,7 +186,7 @@ export default function Signup() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 transition duration-300 disabled:opacity-50"
+              className="w-full py-2 px-4 bg-gray-900 text-white font-semibold rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 transition duration-300 disabled:opacity-50"
             >
               {loading ? "Creating account..." : "Create account"}
             </button>

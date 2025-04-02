@@ -47,7 +47,7 @@ export default function Login() {
         }}
       >
         <div className="flex justify-center">
-          <LogIn className="w-12 h-12 text-blue-600" />
+          <LogIn className="w-12 h-12 text-black" />
         </div>
         <h2 className="mt-4 text-center text-3xl font-bold text-gray-800">
           Welcome Back!
@@ -82,7 +82,7 @@ export default function Login() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-10 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full pl-10 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:gray-blue-700 focus:border-gray-700"
                 placeholder="Enter your email"
               />
             </div>
@@ -107,7 +107,7 @@ export default function Login() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-10 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full pl-10 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-700 focus:border-gray-700"
                 placeholder="Enter your password"
               />
             </div>
@@ -117,18 +117,18 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+              className="w-full py-2 px-4 bg-gray-900 text-white font-semibold rounded-md hover:bg-gray-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 disabled:opacity-50"
             >
               {loading ? "Signing in..." : "Sign in"}
             </button>
           </div>
         </form>
 
-        <p className="mt-4 text-center text-sm text-gray-700">
+        <p className="mt-4 text-center text-sm text-gray-600">
           Don't have an account?{" "}
           <Link
             to="/signup"
-            className="font-medium text-blue-600 hover:text-blue-500 transition duration-300"
+            className="font-medium text-gray-900 hover:text-gray-700 transition duration-300"
           >
             Sign up
           </Link>

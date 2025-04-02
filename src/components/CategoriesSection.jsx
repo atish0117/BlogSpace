@@ -38,7 +38,7 @@ export default function CategoriesSection() {
             }}
             onClick={() => handleCategoryClick(category)}
           >
-            <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+           <div className="absolute inset-0 bg-black/50 hover:bg-black/80 hover:scale-140 flex items-center justify-center transition-all duration-300 ease-in-out">
               <h3 className="text-white text-lg font-semibold">{category.name}</h3>
             </div>
           </div>
