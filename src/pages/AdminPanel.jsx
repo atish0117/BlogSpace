@@ -68,7 +68,7 @@ const handleSaveEdit = async () => {
             <div className="relative group">
             <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-blue-600 p-1 animate-spin-slow"></div>
               <img
-                src={userProfile?.profileId ? storage.getFilePreview(Config.appwriteBucketId, userProfile.profileId) 
+                src={userProfile?.profileId ? storage.getFileView(Config.appwriteBucketId, userProfile.profileId) 
                   : `https://api.dicebear.com/9.x/initials/svg?seed=${userProfile?.firstName}+${userProfile?.lastName}`}
                 alt="Admin"
                 className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg relative z-10 transform transition-all duration-300 group-hover:scale-110 group-hover:rotate-6"
@@ -133,7 +133,7 @@ const handleSaveEdit = async () => {
               <tr key={user.$id} className="border-b text-center">
                 <td className="py-2 px-4">
                   <img
-                    src={user.profileId ? storage.getFilePreview(Config.appwriteBucketId, user.profileId) : "/default-avatar.png"}
+                    src={user.profileId ? storage.getFileView(Config.appwriteBucketId, user.profileId) : "/default-avatar.png"}
                     alt={user.firstName}
                     className="w-12 h-12 rounded-full"
                   />
@@ -173,7 +173,7 @@ const handleSaveEdit = async () => {
               <tr key={blog.$id} className="border-b text-center">
                 <td className="py-2 px-4">
                   <img
-                    src={blog.thumbnail ? storage.getFilePreview(Config.appwriteBucketId, blog.thumbnail) : "/default-thumbnail.jpg"}
+                    src={blog.thumbnail ? storage.getFileView(Config.appwriteBucketId, blog.thumbnail) : "/default-thumbnail.jpg"}
                     alt="Blog"
                     className="w-12 h-12 rounded-md"
                   />

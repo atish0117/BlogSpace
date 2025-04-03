@@ -67,7 +67,7 @@ export default function SingleBlog() {
           );
 
           if (userProfileData.profileId) {
-            const imageUrl = storage.getFilePreview(
+            const imageUrl = storage.getFileView(
               Config.appwriteBucketId, // Bucket ID
               userProfileData.profileId // Image File ID
             );
@@ -106,7 +106,7 @@ export default function SingleBlog() {
   // for thunbnail image are fetch
   useEffect(() => {
     if (blog?.thumbnail) {
-      setThumbnailUrl(storage.getFilePreview(Config.appwriteBucketId, blog.thumbnail));
+      setThumbnailUrl(storage.getFileView(Config.appwriteBucketId, blog.thumbnail));
     }
   }, [blog?.thumbnail]);
 
@@ -282,7 +282,7 @@ export default function SingleBlog() {
                <img
                   src={
                     comment.profileImage
-                      ? storage.getFilePreview(
+                      ? storage.getFileView(
                           Config.appwriteBucketId,
                           comment.profileImage
                         )

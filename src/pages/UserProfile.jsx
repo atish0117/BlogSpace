@@ -201,7 +201,7 @@ const totalViews = userBlogs.reduce((acc, blog) => acc + (blog.views || 0), 0);
               src={
                 coverImage ||
                 (userProfile?.coverId
-                  ? storage.getFilePreview(
+                  ? storage.getFileView(
                       Config.appwriteBucketId,
                       userProfile.coverId
                     )
@@ -234,7 +234,7 @@ const totalViews = userBlogs.reduce((acc, blog) => acc + (blog.views || 0), 0);
                           src={
                             profileImage ||
                             (userProfile?.profileId
-                              ? storage.getFilePreview(
+                              ? storage.getFileView(
                                   Config.appwriteBucketId,
                                   userProfile.profileId
                                 )

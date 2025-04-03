@@ -34,7 +34,7 @@ const BlogCard = ({ blog, showActions = false }) => {  // Accept showActions pro
       {/* Blog Thumbnail */}
       <Link to={`/blog/${blog.$id}`} className="relative h-48 overflow-hidden block">
         <img
-          src={blog.thumbnail ? storage.getFilePreview(Config.appwriteBucketId, blog.thumbnail) : "/default-thumbnail.jpg"}
+          src={blog.thumbnail ? storage.getFileView(Config.appwriteBucketId, blog.thumbnail) : "/default-thumbnail.jpg"}
           alt={blog.title}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
         />

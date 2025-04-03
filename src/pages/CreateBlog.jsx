@@ -26,7 +26,7 @@ const CreateBlog = () => {
 
   const [thumbnail, setThumbnail] = useState(null);
   const [thumbnailPreview, setThumbnailPreview] = useState(
-    existingBlog ? storage.getFilePreview(Config.appwriteBucketId, existingBlog.thumbnail) : ""
+    existingBlog ? storage.getFileView(Config.appwriteBucketId, existingBlog.thumbnail) : ""
   );
   const [loading, setLoading] = useState(false);
 
