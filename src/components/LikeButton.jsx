@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { Heart } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { toast } from "react-hot-toast";
 
-const LikeButton = ({ blog }) => {
-  const { userProfile, toggleLike } = useAuth();
+const LikeButton = ({ blog, userProfile, navigate }) => {
+  const { toggleLike } = useAuth(); // no need to redeclare userProfile here
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(blog.likes?.length || 0);
 
@@ -18,7 +19,13 @@ const LikeButton = ({ blog }) => {
 
   const handleLikeClick = (e) => {
     e.stopPropagation();
-    
+
+    // Redirect to login if user not logged in
+    if (!userProfile) {
+      toast.error("Please login to like this blog.");
+      return navigate("/login");
+    }
+
     const newLikeState = !isLiked;
     setIsLiked(newLikeState);
     setLikeCount((prev) => (newLikeState ? prev + 1 : prev - 1));
@@ -33,7 +40,7 @@ const LikeButton = ({ blog }) => {
         isLiked ? "text-red-600" : "text-gray-500 hover:text-red-600"
       }`}
     >
-      {isLiked ? "❤️" : <Heart className="w-6 h-6" />} {/* Show filled heart on like */}
+      {isLiked ? "❤️" : <Heart className="w-6 h-6" />}
       <span>{likeCount}</span>
     </button>
   );

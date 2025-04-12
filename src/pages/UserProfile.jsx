@@ -39,9 +39,9 @@ export default function UserProfile() {
             Config.appwriteBucketId,
             userProfile.coverId
           );
-          console.log("✅ Old cover image deleted successfully");
+          console.log(" Old cover image deleted successfully");
         } catch (error) {
-          console.warn("⚠️ Error deleting old cover image:", error.message);
+          console.warn(" Error deleting old cover image:", error.message);
         }
       }
 

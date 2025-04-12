@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { MessageCircle, Share2, Bookmark, BookmarkCheck } from "lucide-react";
+import { MessageCircle, Bookmark, BookmarkCheck } from "lucide-react";
 import { databases, storage } from "../lib/appwrite";
 import { ID } from "appwrite";
 import Config from "../lib/Config";
@@ -56,7 +56,6 @@ export default function SingleBlog() {
         }
 
         setBlog({ ...blogData, views: (blogData.views || 0) + 1 });
-        setComments(blogData.comments || []);
 
         // Fetch Author Profile Image
         if (blogData.userId) {
@@ -96,7 +95,7 @@ export default function SingleBlog() {
         console.error("Error fetching blog:", error.message);
         toast.error("Failed to load blog.");
       } finally {
-        setLoading(false); // 👈 Stop loading once data is fetched
+        setLoading(false); // Stop loading once data is fetched
       }
     };
 
@@ -150,12 +149,8 @@ export default function SingleBlog() {
     );
   }
 
-  console.log("thumbnailURL",thumbnailUrl)
   // Show nothing if blog data is still null (extra safety)
   if (!blog) return null;
-  console.log("all detail in blog ", blog);
-
-  console.log("Blog Thumbnail:", blog?.thumbnail);
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
@@ -286,8 +281,8 @@ export default function SingleBlog() {
                           Config.appwriteBucketId,
                           comment.profileImage
                         )
-                      : `https://api.dicebear.com/9.x/identicon/svg?seed=${comment?.author} || "User"
-                        }`
+                      : `https://api.dicebear.com/9.x/identicon/svg?seed=${comment?.author}` || "User"
+                        
                   }
                   alt={comment.author}
                   className="h-10 w-10 rounded-full"

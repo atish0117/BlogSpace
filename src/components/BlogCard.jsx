@@ -2,19 +2,23 @@ import React from "react";
 import { Link,useNavigate } from "react-router-dom";
 import { storage } from "../lib/appwrite"; // Adjust import path
 import Config from "../lib/Config"; // Adjust import path
-import { Bookmark, BookmarkCheck, UserCircle, Share, Trash2, Edit2, } from "lucide-react";
+import { Bookmark, BookmarkCheck, UserCircle, Trash2, Edit2,MessageCircle  } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "react-hot-toast"; // Import toast notification
 import LikeButton from "./LikeButton";
-import ShareButton from "./ShareButton";
 
 const BlogCard = ({ blog, showActions = false }) => {  // Accept showActions prop form UserProfile component
   const { userProfile, saveBlog, unsaveBlog, deleteBlog } = useAuth();
   const isSaved = userProfile?.savedBlogs?.includes(blog.$id);
   const navigate = useNavigate();
+
   // Handle Save/Unsave with Toast Notification
   const handleSave = async (e) => {
     e.stopPropagation(); // Prevents unintended navigation
+    if (!userProfile){
+      toast.error("Please login to save blog");
+     return navigate("/login");
+    }
     if (isSaved) {
       await unsaveBlog(blog.$id);
       toast.success("Blog removed from saved!"); // Toast for Unsave
@@ -89,7 +93,7 @@ const BlogCard = ({ blog, showActions = false }) => {  // Accept showActions pro
       {/* Interactive Buttons (OUTSIDE THE LINK) */}
       <div className="flex items-center justify-between px-5 py-3 border-t bg-gray-50">
   {/* Like Button */}
-  <LikeButton blog={blog} />
+  <LikeButton blog={blog} userProfile={userProfile} navigate={navigate} />
 
   {/* Save Button */}
   <button
@@ -101,10 +105,13 @@ const BlogCard = ({ blog, showActions = false }) => {  // Accept showActions pro
     {isSaved ? <BookmarkCheck size={20} /> : <Bookmark size={20} />}
   </button>
 
-  {/* Share Button */}
-  <div className="flex items-center">
-    <ShareButton />
-  </div>
+  <div className="flex items-center justify-between">
+        {/* Comment Button - Navigates to Blog Page */}
+        <Link to={`/blog/${blog.$id}`} className="flex items-center space-x-1 text-gray-600">
+          <MessageCircle className="w-5 h-5" />
+          <span>{blog.comments?.length || 0}</span>
+        </Link>
+      </div>
 </div>
 
       {showActions && (
