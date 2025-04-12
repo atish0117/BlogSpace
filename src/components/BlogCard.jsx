@@ -17,7 +17,7 @@ const BlogCard = ({ blog, showActions = false }) => {  // Accept showActions pro
     e.stopPropagation(); // Prevents unintended navigation
     if (!userProfile){
       toast.error("Please login to save blog");
-     return navigate("/login");
+      return navigate("/login");
     }
     if (isSaved) {
       await unsaveBlog(blog.$id);
