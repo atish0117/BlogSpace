@@ -7,7 +7,7 @@ const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [userProfile, setUserProfile] = useState(null);
   const [blogs, setBlogs] = useState([]);
   const [allBlogs, setAllBlogs] = useState([]);
@@ -24,7 +24,7 @@ export function AuthProvider({ children }) {
     const fetchUserData = async () => {
       const storedEmail = localStorage.getItem('BlogToken');
       if (!storedEmail) {
-        setLoading(false);
+        setIsLoading(false);
         return;
       }
 
@@ -50,7 +50,7 @@ export function AuthProvider({ children }) {
       } catch (error) {
         console.error('Error fetching user data:', error.message);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
@@ -60,13 +60,16 @@ export function AuthProvider({ children }) {
   //  Fetch all blogs from the database
   const fetchAllBlogs = async () => {
     try {
+      setIsLoading(true); 
       const response = await databases.listDocuments(
         Config.appwriteDatabaseId,
         Config.appwriteCollectionIdBlogs
       );
-      setAllBlogs(response.documents);
+        setAllBlogs(response.documents);
+        setIsLoading(false); // Stop loader after slight delay
     } catch (error) {
       console.error('Error fetching all blogs:', error.message);
+      setIsLoading(false); 
     }
   };
 
@@ -308,11 +311,6 @@ const editUser = async (userId, updatedData) => {
     }
   };
   
-  
-  
-  
-  
-
 
 
   //  Check if user is logged in
@@ -323,7 +321,7 @@ const editUser = async (userId, updatedData) => {
     } catch (error) {
       setUser(null);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   }
 
@@ -387,7 +385,7 @@ const editUser = async (userId, updatedData) => {
         allBlogs,
         allUsers,
         user,
-        loading,
+        isLoading,
         login,
         signup,
         logout,

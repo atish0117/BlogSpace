@@ -23,6 +23,7 @@
     "react-router-dom": "^7.2.0",
     "react-select": "^5.10.1",
     "react-slick": "^0.30.3",
+    "react-spinners": "^0.15.0",
     "slick-carousel": "^1.8.1",
     "suneditor": "^2.47.5",
     "suneditor-react": "^3.6.1",
