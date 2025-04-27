@@ -21,6 +21,8 @@ export default function Feedback() {
     setShowModal(true);
     // restart rating star
     setRating(0);
+    // restart comment
+    setComment("");
   };
 
   return (
