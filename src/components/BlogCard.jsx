@@ -85,6 +85,17 @@ const BlogCard = ({ blog, showActions = false }) => {  // Accept showActions pro
 
           <div className="flex justify-between text-xs text-gray-500">
             <span>{new Date(blog.$createdAt).toLocaleDateString()}</span>
+            {blog.userId === userProfile.$id && (
+            <span
+  className={`px-3  py-2 text-sm font-bold rounded-xl 
+    ${blog.status.toLowerCase() === "published" 
+      ? "bg-green-100 text-green-700" 
+      : "bg-red-100 text-red-700"}
+  `}
+>
+  {blog.status}
+</span>
+            )}
             <span>{blog.views || 0} views</span>
           </div>
         </div>

@@ -12,11 +12,13 @@ export function AuthProvider({ children }) {
   const [blogs, setBlogs] = useState([]);
   const [allBlogs, setAllBlogs] = useState([]);
   const [allUsers, setAllUsers] = useState([]); // Store all users
+  const [publishedBlog, setPublishedBlog] = useState([]); // Store all published blogs
 
   useEffect(() => {
     checkUser();
     fetchAllUsers();
     fetchAllBlogs();
+    fetchPublishedBlogs();
   }, []);
 
   // Fetch the logged-in user profile and their blogs
@@ -72,6 +74,29 @@ export function AuthProvider({ children }) {
       setIsLoading(false); 
     }
   };
+  console.log(allBlogs)
+
+        // fetch only Published blog
+  const fetchPublishedBlogs = async () => {
+  try {
+    setIsLoading(true);
+    const response = await databases.listDocuments(
+      Config.appwriteDatabaseId,
+      Config.appwriteCollectionIdBlogs,
+      [
+        Query.equal("status", "Published")  // 👈 only published
+      ]
+    );
+    setPublishedBlog(response.documents);
+    setIsLoading(false);
+  } catch (error) {
+    console.error("Error fetching published blogs:", error.message);
+    setIsLoading(false);
+  }
+};
+console.log(publishedBlog)
+
+
 
   //  Fetch all users from the database
   const fetchAllUsers = async () => {
@@ -394,6 +419,7 @@ const editUser = async (userId, updatedData) => {
         editUser,
         deleteUser,
         deleteBlog,
+        publishedBlog, // published blog 
       }}
     >
       {children}
