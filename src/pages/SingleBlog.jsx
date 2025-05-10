@@ -213,7 +213,7 @@ export default function SingleBlog() {
   src=
     {thumbnailUrl}
   alt={blog?.title}
-  className="w-full h-96 object-cover rounded-lg"
+  className="w-full h-96 object-fill rounded-lg"
 />
         </div>
 

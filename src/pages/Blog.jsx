@@ -1,7 +1,3 @@
-
-
-
-
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import BlogCard from "../components/BlogCard";
@@ -9,7 +5,8 @@ import { useAuth } from "../context/AuthContext";
 import {LoaderPage, LoaderPage2} from "../components/LoaderPage";
 
 export default function Blog() {
-  const { allBlogs, isLoading } = useAuth();
+  const { allBlogs, isLoading,publishedBlog } = useAuth();
+  console.log(publishedBlog)
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const categoryFromURL = queryParams.get("category");
@@ -45,7 +42,7 @@ export default function Blog() {
     }
   }, [categoryFromURL]);
 
-  const filteredBlogs = allBlogs.filter((blog) => {
+  const filteredBlogs = publishedBlog.filter((blog) => {
     const matchesSearch =
       blog.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       blog.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -63,7 +60,7 @@ export default function Blog() {
     console.log("call useEffect")
         setVisibleBlogs(filteredBlogs.slice(0, blogsToShow));
         // setIsLoader(false);
-  }, [allBlogs, blogsToShow]);
+  }, [publishedBlog, blogsToShow]);
 
   const HandleScroll =async ()=>{
     try {

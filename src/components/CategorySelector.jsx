@@ -14,7 +14,7 @@ const categories = [
   "Biotechnology & Medicine", "Self-Improvement & Motivation", "Social Issues & Culture", "Psychology & Philosophy",
   "Inspirational Stories", "Technology", "Books", "Art & Design", "Self-Improvement", "Health & Wellness",
   "Business", "Movies", "Travel", "Writing", "Photography", "Music", "Food", "Programming", "Design", "SaveThePlanet" ,"Innovation","NatureMeetsTechnology","EcoFriendly ",
-  "EnvironmentalAwareness","Other"
+  "EnvironmentalAwareness", "SuccessTips","Productivity","Motivation", "DailyHabits","Discipline" ,"Other"
 ];
 
 const CategorySelector = ({ selectedCategories, setSelectedCategories }) => {

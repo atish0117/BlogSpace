@@ -22,6 +22,7 @@ const CreateBlog = () => {
     title: existingBlog?.title || "",
     categories: existingBlog?.category || [],
     content: existingBlog?.description || "",
+     status: existingBlog?.status || "Draft", // new
   });
 
   const [thumbnail, setThumbnail] = useState(null);
@@ -30,18 +31,7 @@ const CreateBlog = () => {
   );
   const [loading, setLoading] = useState(false);
 
-  // const categories = [
-  //   "Development", "Web Development", "Mobile Apps", "AI & Machine Learning", "Cybersecurity",
-  //   "DevOps & Cloud Computing", "Programming & Coding", "Entrepreneurship & Startups", "Investing & Stock Market",
-  //   "Personal Finance & Budgeting", "Marketing & SEO", "E-commerce & Dropshipping", "Freelancing & Remote Work",
-  //   "Health & Fitness", "Mental Wellness & Self-Care", "Travel & Adventure", "Food & Cooking", "Fashion & Beauty",
-  //   "Home & Living", "Job Search & Career Growth", "Productivity & Time Management", "Study & Learning Hacks",
-  //   "Leadership & Management", "Movies & TV Shows", "Music & Podcasts", "Gaming & Esports", "Books & Literature",
-  //   "Pop Culture & Celebrities", "Space & Astronomy", "Environment & Sustainability", "Physics & Chemistry",
-  //   "Biotechnology & Medicine", "Self-Improvement & Motivation", "Social Issues & Culture", "Psychology & Philosophy",
-  //   "Inspirational Stories", "technology","books","art & design","self-improvement","health & wellness",
-  //   "business", "movies","travel","writing","photography","Music", "Food", "Programming", "Design", "Other"
-  // ];
+ 
 
   // Handle Thumbnail Change
   const handleThumbnailChange = (e) => {
@@ -54,28 +44,6 @@ const CreateBlog = () => {
     }
   };
 
- // Handle Category Selection
-// const handleCategoryChange = (category) => {
-//   setBlogs((prev) => {
-//     if (prev.categories.includes(category)) {
-//       // Remove category if already selected
-//       return {
-//         ...prev,
-//         categories: prev.categories.filter((c) => c !== category),
-//       };
-//     } else if (prev.categories.length >= 5) {
-//       // Show error if user selects more than 5 categories
-//       toast.error("You can select up to 5 categories only!");
-//       return prev;
-//     }
-
-//     // Add category if less than 5 are selected
-//     return {
-//       ...prev,
-//       categories: [...prev.categories, category],
-//     };
-//   });
-// };
 
   // Upload Image
   const uploadImage = async () => {
@@ -109,8 +77,10 @@ console.log("existingBlog.thumbnail",existingBlog?.thumbnail)
             category: blogs.categories,
             description: blogs.content,
             thumbnail: imageId,
+            status: blogs.status, // 👈 new
           }
         );
+        toast.success(blogs.status === "draft" ? "Draft saved!" : "Blog updated & published!");
         toast.success("Blog updated successfully!");
       } else {
         // Create New Blog
@@ -123,9 +93,10 @@ console.log("existingBlog.thumbnail",existingBlog?.thumbnail)
             category: blogs.categories,
             description: blogs.content,
             thumbnail: imageId,
-            authorName: `${userProfile.firstName} ${userProfile.lastName}`,
+            authorName: `${userProfile?.firstName || ""} ${userProfile?.lastName || ""}`,
             userId: userProfile.$id,
             authorImage: userProfile?.profileId,
+             status: blogs.status, // 👈 new
           }
         );
 
@@ -141,6 +112,7 @@ console.log("existingBlog.thumbnail",existingBlog?.thumbnail)
           userProfile.$id,
           { blogsId: [...(userProfile.blogsId || []), newBlog.$id] }
         );
+        toast.success(blogs.status === "draft" ? "Draft saved!" : "Blog published!");
         toast.success("Blog created successfully!");
       }
 
@@ -221,11 +193,21 @@ console.log("existingBlog.thumbnail",existingBlog?.thumbnail)
     ],
   }}
 />
-
+        <div>
+  <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+  <select
+    value={blogs.status}
+    onChange={(e) => setBlogs({ ...blogs, status: e.target.value })}
+    className="mt-1 block w-1/5 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+  >
+    <option value="Published">Published</option>
+    <option value="Draft">Save as Draft</option>
+  </select>
+</div>
 
           {/* Submit Button */}
-          <button type="submit" className="w-full bg-indigo-600 text-white font-medium py-2 px-4 rounded-md hover:bg-indigo-700">
-            {loading ? "Saving..." : existingBlog ? "Update Blog" : "Create Blog"}
+          <button type="submit" disabled={loading} className={`w-full ${loading ? 'bg-gray-400' : 'bg-indigo-600 hover:bg-indigo-700'}  text-white font-medium py-2 px-4 rounded-md hover:bg-indigo-700`}>
+            {loading ? "Saving..." : existingBlog ? `Update Blog & ${blogs.status}` : `Create Blog & ${blogs.status}`}
           </button>
         </form>
       </div>
