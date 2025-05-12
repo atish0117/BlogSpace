@@ -7,8 +7,9 @@ import { ID ,Query} from "appwrite";
 import Config from "../lib/Config";
 import { toast } from "react-hot-toast";
 import BlogCard from "../components/BlogCard";
+import { LoaderPage } from "../components/LoaderPage";
 export default function UserProfile() {
-  const { userProfile, setUserProfile,deleteUser, editUser } = useAuth();
+  const { userProfile, setUserProfile,deleteUser, editUser,isLoading } = useAuth();
   console.log(userProfile, "userProfile in Profile page");
   const [userBlogs, setUserBlogs] = useState([]); //  store all user's blog inside this state
   const [coverImage, setCoverImage] = useState("");
@@ -51,16 +52,14 @@ export default function UserProfile() {
         ID.unique(), // Unique File ID
         file
       );
-      // 🔹 Update state with new profile data
-      setUserProfile(updatedProfile);
       // Step 4: Store the uploaded cover image ID in the database
-      await databases.updateDocument(
+   const updatedProfile =   await databases.updateDocument(
         Config.appwriteDatabaseId, // Database ID
         Config.appwriteCollectionIdUsers, // Users Collection ID
         userProfile.$id, // User ID
         { coverId: uploadedFile.$id } // Store only the image ID
       );
-
+        setUserProfile(updatedProfile)
       toast.success(" Cover image updated successfully!");
     } catch (error) {
       console.error(" Error updating cover image:", error.message);
@@ -190,6 +189,10 @@ const totalViews = userBlogs.reduce((acc, blog) => acc + (blog.views || 0), 0);
 
     fetchSavedBlogs();
   }, [userProfile]);
+
+if(isLoading){
+  return <LoaderPage/>
+}
 
   return (
     <div className="min-h-screen bg-gray-50">

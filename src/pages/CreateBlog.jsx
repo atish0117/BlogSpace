@@ -166,7 +166,7 @@ console.log("existingBlog.thumbnail",existingBlog?.thumbnail)
               required
             />
           </div>
-
+                
           {/* Categories */}
           <CategorySelector
         selectedCategories={blogs.categories}
@@ -194,20 +194,32 @@ console.log("existingBlog.thumbnail",existingBlog?.thumbnail)
   }}
 />
         <div>
-  <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+  <label className="block text-sm font-medium mb-1">Status</label>
   <select
     value={blogs.status}
     onChange={(e) => setBlogs({ ...blogs, status: e.target.value })}
-    className="mt-1 block w-1/5 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+    className={`mt-1 text-xl font-extrabold block w-1/5 px-3 py-2 border border-green-300 rounded-md shadow-sm
+      ${blogs.status === "Published" ? "bg-green-100 text-green-700 ring-green-400 border-green-300 focus:ring-green-500 focus:border-green-500"
+        :"bg-red-100 text-red-700 ring-red-400 border-red-300 focus:ring-red-500 focus:border-red-500"
+      }`}
   >
-    <option value="Published">Published</option>
-    <option value="Draft">Save as Draft</option>
+    <option value="Published"   className="bg-green-100 font-extrabold text-green-700">Published</option>
+    <option value="Draft" className="bg-red-100 font-bold text-red-700">Save as Draft</option>
   </select>
 </div>
 
           {/* Submit Button */}
-          <button type="submit" disabled={loading} className={`w-full ${loading ? 'bg-gray-400' : 'bg-indigo-600 hover:bg-indigo-700'}  text-white font-medium py-2 px-4 rounded-md hover:bg-indigo-700`}>
-            {loading ? "Saving..." : existingBlog ? `Update Blog & ${blogs.status}` : `Create Blog & ${blogs.status}`}
+          <button type="submit" disabled={loading} className={`w-full text-white font-medium py-2 px-4 rounded-md
+              ${loading 
+              ? 'bg-gray-400 cursor-not-allowed' 
+              :blogs.status === 'Published' 
+              ?'bg-green-600 hover:bg-green-700'
+              :'bg-red-600 hover:bg-red-700'
+              }`}>
+            {loading 
+            ? "Saving..." : existingBlog 
+                          ? `Update Blog & ${blogs.status}`
+                          : `Create Blog & ${blogs.status}`}
           </button>
         </form>
       </div>

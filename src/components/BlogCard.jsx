@@ -33,6 +33,9 @@ const BlogCard = ({ blog, showActions = false }) => {  // Accept showActions pro
   // e.stopPropagation(); 
   navigate("/createblog", {state:{blog}});
 }
+
+// if(!userProfile) return null
+
   return (
     <div className="w-[350px] h-[500px] flex flex-col bg-white rounded-xl shadow-lg overflow-hidden transition-transform hover:scale-[1.02] hover:shadow-xl border border-gray-100 group">
       {/* Blog Thumbnail */}
@@ -85,7 +88,7 @@ const BlogCard = ({ blog, showActions = false }) => {  // Accept showActions pro
 
           <div className="flex justify-between text-xs text-gray-500">
             <span>{new Date(blog.$createdAt).toLocaleDateString()}</span>
-            {blog.userId === userProfile.$id && (
+            {blog.userId === userProfile?.$id && (
             <span
   className={`px-3  py-2 text-sm font-bold rounded-xl 
     ${blog.status.toLowerCase() === "published" 
