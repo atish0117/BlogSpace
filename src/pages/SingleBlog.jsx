@@ -9,6 +9,7 @@ import { Query } from "appwrite";
 import { useAuth } from "../context/AuthContext";
 import LikeButton from "../components/LikeButton";
 import ShareButton from "../components/ShareButton";
+import { LoaderPage } from "../components/LoaderPage";
 export default function SingleBlog() {
   const { id } = useParams();
   const [blog, setBlog] = useState(null);
@@ -144,7 +145,7 @@ export default function SingleBlog() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen text-xl font-semibold">
-        Loading...
+            <LoaderPage/>
       </div>
     );
   }

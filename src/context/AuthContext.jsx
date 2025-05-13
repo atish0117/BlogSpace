@@ -13,7 +13,7 @@ export function AuthProvider({ children }) {
   const [allBlogs, setAllBlogs] = useState([]);
   const [allUsers, setAllUsers] = useState([]); // Store all users
   const [publishedBlog, setPublishedBlog] = useState([]); // Store all published blogs
-
+  
   useEffect(() => {
     checkUser();
     fetchAllUsers();
@@ -31,6 +31,7 @@ export function AuthProvider({ children }) {
       }
 
       try {
+        setIsLoading(true);
         const userResponse = await databases.listDocuments(
           Config.appwriteDatabaseId,
           Config.appwriteCollectionIdUsers,
@@ -48,6 +49,7 @@ export function AuthProvider({ children }) {
           );
 
           setBlogs(blogResponse.documents);
+        setIsLoading(false); // Stop loader after slight delay
         }
       } catch (error) {
         console.error('Error fetching user data:', error.message);
@@ -74,8 +76,6 @@ export function AuthProvider({ children }) {
       setIsLoading(false); 
     }
   };
-  console.log(allBlogs)
-
         // fetch only Published blog
   const fetchPublishedBlogs = async () => {
   try {
@@ -94,7 +94,6 @@ export function AuthProvider({ children }) {
     setIsLoading(false);
   }
 };
-console.log(publishedBlog)
 
 
 
@@ -339,16 +338,21 @@ const editUser = async (userId, updatedData) => {
 
 
   //  Check if user is logged in
-  async function checkUser() {
-    try {
-      const currentUser = await account.get();
-      setUser(currentUser);
-    } catch (error) {
-      setUser(null);
-    } finally {
-      setIsLoading(false);
+ async function checkUser() {
+  try {
+    const currentUser = await account.get();
+    setUser(currentUser);
+  } catch (error) {
+    // Only log this if you want, or just ignore 401
+    if (error.code !== 401) {
+      console.error("Error checking user:", error.message);
     }
+    setUser(null); // ensure app doesn't crash
+  } finally {
+    setIsLoading(false); // stop loading state
   }
+}
+
 
   //  User login
   async function login(email, password) {

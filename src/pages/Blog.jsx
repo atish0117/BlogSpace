@@ -5,7 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import {LoaderPage, LoaderPage2} from "../components/LoaderPage";
 
 export default function Blog() {
-  const { allBlogs, isLoading,publishedBlog } = useAuth();
+  const { isLoading,publishedBlog,allBlogs } = useAuth();
   console.log(publishedBlog)
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -24,16 +24,16 @@ export default function Blog() {
   const [visibleBlogs, setVisibleBlogs]=useState([]);
 
   const categories = [
-    "Development", "Web Development", "Mobile Apps", "AI & Machine Learning", "Cybersecurity",
-    "DevOps & Cloud Computing", "Programming & Coding", "Entrepreneurship & Startups", "Investing & Stock Market",
-    "Personal Finance & Budgeting", "Marketing & SEO", "E-commerce & Dropshipping", "Freelancing & Remote Work",
-    "Health & Fitness", "Mental Wellness & Self-Care", "Travel & Adventure", "Food & Cooking", "Fashion & Beauty",
-    "Home & Living", "Job Search & Career Growth", "Productivity & Time Management", "Study & Learning Hacks",
-    "Leadership & Management", "Movies & TV Shows", "Music & Podcasts", "Gaming & Esports", "Books & Literature",
-    "Pop Culture & Celebrities", "Space & Astronomy", "Environment & Sustainability", "Physics & Chemistry",
-    "Biotechnology & Medicine", "Self-Improvement & Motivation", "Social Issues & Culture", "Psychology & Philosophy",
-    "Inspirational Stories", "Technology", "Books", "Art & Design", "Self-Improvement", "Health & Wellness",
-    "Business", "Movies", "Travel", "Writing", "Photography", "Music", "Food", "Programming", "Design", "Other"
+    "Development", "Web Development", "Mobile Apps", "AI","Machine Learning", "Cybersecurity",
+    "DevOps","Cloud Computing","Coding", "Entrepreneurship","Startups", "Investing","Stock Market",
+    "Personal Finance","Budgeting", "Marketing","SEO", "E-commerce","Dropshipping", "Freelancing","Remote Work",
+    "Fitness", "Mental Wellness","Self-Care", "Travel","Adventure", "Food","Cooking", "Fashion","Beauty",
+    "Home","Living", "Job Search","Career Growth", "Productivity","Time Management", "Study","Learning Hacks",
+    "Leadership","Management", "TV Shows","Podcasts", "Gaming","Esports","Literature",
+    "Pop Culture","Celebrities", "Space","Astronomy", "Environment","Sustainability", "Physics","Chemistry",
+    "Biotechnology","Medicine", "Social Issues","Culture", "Psychology","Philosophy",
+    "Inspirational Stories", "Technology", "Books", "Art","Design", "Self-Improvement", "Health","Wellness",
+    "Business", "Movies","Stories", "Writing", "Photography", "Music",  "Programming", "Education",  "SuccessTips","Motivation", "DailyHabits","Discipline", "Other"
   ];
 
   useEffect(() => {
@@ -42,7 +42,7 @@ export default function Blog() {
     }
   }, [categoryFromURL]);
 
-  const filteredBlogs = publishedBlog.filter((blog) => {
+  const filteredBlogs = allBlogs.filter((blog) => {
     const matchesSearch =
       blog.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       blog.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -60,7 +60,7 @@ export default function Blog() {
     console.log("call useEffect")
         setVisibleBlogs(filteredBlogs.slice(0, blogsToShow));
         // setIsLoader(false);
-  }, [publishedBlog, blogsToShow]);
+  }, [allBlogs, blogsToShow]);
 
   const HandleScroll =async ()=>{
     try {

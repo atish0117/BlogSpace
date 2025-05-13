@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { UserPlus } from "lucide-react";
 import { account, databases,  } from "../lib/appwrite"; // Import Appwrite modules
 import { ID } from "appwrite";
+
 export default function Signup() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
