@@ -29,8 +29,7 @@ A responsive and user-friendly blogging platform to explore, search, and filter 
 
 ## 📸 Screenshots
 
-> Replace with your image or deploy preview  
-> ![BlogSpace Demo](https://blog-space-amber.vercel.app/)
+> ![BlogSpace Demo](https://blog-space-amber.vercel.app)
 
 ## 🔧 Setup Instructions
 
