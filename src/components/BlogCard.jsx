@@ -105,7 +105,7 @@ const BlogCard = ({ blog, showActions = false }) => {  // Accept showActions pro
       </div>
 
       {/* Interactive Buttons (OUTSIDE THE LINK) */}
-      <div className="flex items-center justify-between px-5 py-3 border-t bg-gray-50">
+      <div className="flex items-center justify-between px-5 py-3 border-t bg-gray-950">
   {/* Like Button */}
   <LikeButton blog={blog} userProfile={userProfile} navigate={navigate} />
 
