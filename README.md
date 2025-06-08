@@ -6,7 +6,7 @@ A responsive and user-friendly blogging platform to explore, search, and filter 
 ![BlogSpace Screenshot](./public/screenShot-2.png) 
 ![BlogSpace Screenshot](./public/screenShot-3.png) 
 ![BlogSpace Screenshot](./public/screenShot-4.png) 
-![BlogSpace Screenshot](./public/screenShot-4.png) 
+![BlogSpace Screenshot](./public/screenShot-5.png) 
 ![BlogSpace Screenshot](./public/screenShot-6.png) 
 ![BlogSpace Screenshot](./public/screenShot-7.png) 
 
