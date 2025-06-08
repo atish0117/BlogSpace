@@ -57,7 +57,6 @@ export default function Blog() {
 
   useEffect(() => {
     // setIsLoader(true);
-    console.log("call useEffect")
         setVisibleBlogs(filteredBlogs.slice(0, blogsToShow));
         // setIsLoader(false);
   }, [allBlogs, blogsToShow]);
@@ -65,9 +64,7 @@ export default function Blog() {
   const HandleScroll =async ()=>{
     try {
       const scrollPosition = document.documentElement.scrollTop + window.innerHeight;
-      console.log("scroll Position",scrollPosition)
       const totalHeight = document.documentElement.scrollHeight;
-      console.log("total Height",totalHeight)
 
       if(scrollPosition +1 >= totalHeight){
         setIsFetchMoreBlog(true); // show scroll loader
