@@ -1,4 +1,3 @@
-import React from 'react';
 import { ClipLoader, RiseLoader } from 'react-spinners';
 
 // Loader with RiseLoader
